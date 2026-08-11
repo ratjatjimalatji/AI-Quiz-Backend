@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   # root "posts#index"
   resources :players, only: [:index, :create, :show]
   resources :games, only: [:index, :create]
+  resources :questions, only: [:index, :show]
 end
