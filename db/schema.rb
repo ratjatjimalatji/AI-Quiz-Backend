@@ -20,6 +20,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_083054) do
     t.index ["host_id"], name: "index_games_on_host_id"
   end
 
+  create_table "options", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "position", default: 0
+    t.integer "question_id", null: false
+    t.string "text", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_id", "position"], name: "index_options_on_question_id_and_position"
+    t.index ["question_id"], name: "index_options_on_question_id"
+  end
+
   create_table "players", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.boolean "eliminated"
@@ -30,6 +40,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_083054) do
     t.index ["game_id"], name: "index_players_on_game_id"
   end
 
+  create_table "questions", force: :cascade do |t|
+    t.json "correct_answer_ids", default: []
+    t.datetime "created_at", null: false
+    t.integer "question_type", default: 0, null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
@@ -38,5 +56,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_083054) do
   end
 
   add_foreign_key "games", "hosts"
+  add_foreign_key "options", "questions"
   add_foreign_key "players", "games"
 end
