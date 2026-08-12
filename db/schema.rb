@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_11_083054) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_12_071605) do
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "game_code"
@@ -43,7 +43,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_083054) do
   create_table "questions", force: :cascade do |t|
     t.json "correct_answer_ids", default: []
     t.datetime "created_at", null: false
+    t.integer "position"
     t.integer "question_type", default: 0, null: false
+    t.integer "round_id"
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["round_id"], name: "index_questions_on_round_id"
+  end
+
+  create_table "rounds", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "round_type", default: 0, null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
   end
@@ -58,4 +68,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_083054) do
   add_foreign_key "games", "hosts"
   add_foreign_key "options", "questions"
   add_foreign_key "players", "games"
+  add_foreign_key "questions", "rounds"
 end
