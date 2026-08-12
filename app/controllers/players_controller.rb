@@ -9,7 +9,14 @@ class PlayersController < ApplicationController
   end
 
   def create
-    player = Player.new(player_params)
+    game = Game.find_by!(game_code: params[:game_code])
+
+    player = player = game.players.create!(
+      username: player_params[:username],
+      score: 0,
+      eliminated: false,
+      is_host: false
+    )
   
     if player.save
       render json: player, status: :created
@@ -20,7 +27,7 @@ class PlayersController < ApplicationController
 
   private
     def player_params
-      params.require(:player).permit(:username, :score, :eliminated, :game_id)
+      params.require(:player).permit(:username)
     end
   end 
 

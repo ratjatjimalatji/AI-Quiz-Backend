@@ -1,6 +1,9 @@
 class Game < ApplicationRecord
-  belongs_to :host, class_name: "User"
 
-  has_many :players
-  has_many :rounds
+  has_many :players , dependent: :destroy
+  has_many :rounds , dependent: :destroy
+
+  def host
+    players.find_by(is_host: true)
+  end
 end

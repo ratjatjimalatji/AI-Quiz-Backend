@@ -10,6 +10,12 @@ class GamesController < ApplicationController
     game = Game.new(game_params)
 
     if game.save
+         host = game.players.create!(
+      username: params[:host_username],
+      is_host: true,
+      score: 0,
+      eliminated: false
+    )
       render json: game, status: :created
     else
       render json: { errors: game.errors },
