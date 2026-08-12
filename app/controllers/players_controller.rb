@@ -10,7 +10,7 @@ class PlayersController < ApplicationController
   def create
     game = Game.find_by!(game_code: params[:game_code])
 
-    player = player = game.players.create!(
+     player = game.players.create!(
       username: player_params[:username],
       score: 0,
       eliminated: false,

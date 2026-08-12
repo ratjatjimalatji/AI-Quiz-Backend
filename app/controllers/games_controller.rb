@@ -1,4 +1,6 @@
 class GamesController < ApplicationController
+ before_action :authenticate_host!, only: [:create]
+
     def index
     games = Game.all
     render json: games

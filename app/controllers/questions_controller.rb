@@ -1,4 +1,6 @@
 class QuestionsController < ApplicationController
+  before_action :authenticate_host!, only: [:create]
+
   def index
     render json: Question.all.as_json(
       except: [:correct_answer_ids],
