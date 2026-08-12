@@ -34,6 +34,7 @@ class QuestionsController < ApplicationController
     params.require(:question).permit(
       :title,
       :question_type,
+      :round_id,
       correct_answer_ids: [],
       options_attributes: [:id, :text, :position, :_destroy]
     )
