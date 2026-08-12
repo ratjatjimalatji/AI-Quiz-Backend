@@ -1,7 +1,6 @@
 class PlayersController < ApplicationController
   def index
     render json: Player.all
-    
   end
 
   def show
@@ -17,7 +16,6 @@ class PlayersController < ApplicationController
       eliminated: false,
       is_host: false
     )
-  
     if player.save
       render json: player, status: :created
     else
@@ -30,6 +28,3 @@ class PlayersController < ApplicationController
       params.require(:player).permit(:username)
     end
   end 
-
-
-
