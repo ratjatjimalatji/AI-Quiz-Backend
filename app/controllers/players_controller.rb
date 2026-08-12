@@ -11,10 +11,7 @@ class PlayersController < ApplicationController
     game = Game.find_by!(game_code: params[:game_code])
 
      player = game.players.create!(
-      username: player_params[:username],
-      score: 0,
-      eliminated: false,
-      is_host: false
+      username: player_params[:username]
     )
     if player.save
       render json: player, status: :created

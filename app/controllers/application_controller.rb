@@ -13,8 +13,8 @@ class ApplicationController < ActionController::API
     private
 
     def extract_token
-        header = request.headers["Authorization"]
-        if header.present? && header.start_with?("Bearer ")
+        header = request.headers[Networking::Headers::AUTHORIZATION]
+        if header.present? && header.start_with?(Networking::Authentication::BEARER)
             header.split(" ").last
         else
             request.headers["X-Host-Token"] || params[:token]
@@ -26,5 +26,4 @@ class ApplicationController < ActionController::API
         render json: { error: "Forbidden: You are not the game host" }, status: :forbidden
         end
     end
-
 end
