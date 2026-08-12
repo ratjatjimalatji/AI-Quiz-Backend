@@ -1,4 +1,5 @@
 class Question < ApplicationRecord
+  belongs_to :round, inverse_of: :questions, optional: true
   has_many :options, -> { order(:position) }, dependent: :destroy, inverse_of: :question
   accepts_nested_attributes_for :options, allow_destroy: true
 
@@ -9,6 +10,7 @@ class Question < ApplicationRecord
     drag_drop_order: 3
   }
   before_validation :set_default_correct_answer_ids, on: :create
+  before_validation :set_default_round_id, on: :create
 
   private
 
@@ -17,6 +19,16 @@ class Question < ApplicationRecord
     return if correct_answer_ids.present?
 
     # Initialize correct_answer_ids as an array
-    self.correct_answer_ids = [1]
+    self.correct_answer_ids = []
   end
+
+  private
+
+  def set_default_round_id
+    # Only set defaults if the attribute is currently empty or nil
+    return if round_id.present?
+
+    # Initialize correct_answer_ids as an array
+    self.round_id = nil
 end 
+end
