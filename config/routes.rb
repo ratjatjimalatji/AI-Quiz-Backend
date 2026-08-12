@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get "rounds/index"
+  get "rounds/create"
+  get "rounds/show"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -10,4 +13,5 @@ Rails.application.routes.draw do
   resources :players, only: [:index, :create, :show]
   resources :games, only: [:index, :create]
   resources :questions, only: [:index, :create, :show]
+  resources :rounds, only: [:index, :create, :show]
 end
