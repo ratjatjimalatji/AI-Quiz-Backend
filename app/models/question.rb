@@ -15,20 +15,14 @@ class Question < ApplicationRecord
   private
 
   def set_default_correct_answer_ids
-    # Only set defaults if the attribute is currently empty or nil
     return if correct_answer_ids.present?
 
-    # Initialize correct_answer_ids as an array
     self.correct_answer_ids = []
   end
 
-  private
-
   def set_default_round_id
-    # Only set defaults if the attribute is currently empty or nil
     return if round_id.present?
 
-    # Initialize correct_answer_ids as an array
     self.round_id = nil
 end 
 end

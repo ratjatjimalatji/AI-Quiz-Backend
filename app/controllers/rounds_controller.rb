@@ -3,7 +3,7 @@ class RoundsController < ApplicationController
   render json: Round.all.as_json(
     include: {
       questions: {
-        # except: [:correct_answer_ids],
+        except: [:correct_answer_ids],
         include: :options
       }
     }
@@ -15,7 +15,7 @@ end
     render json: round.as_json(
   include: {
     questions: {
-      # except: [:correct_answer_ids],
+      except: [:correct_answer_ids],
       include: :options
     }
   }
@@ -29,7 +29,7 @@ end
       render json: round.as_json(
   include: {
     questions: { #nested in round
-      # except: [:correct_answer_ids], # dont show column
+      except: [:correct_answer_ids], # dont show column
       include: :options
     }
   }
