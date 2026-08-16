@@ -10,12 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_12_075548) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_16_105808) do
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "game_code"
     t.string "status"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "hosts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.string "token", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token"], name: "index_hosts_on_token", unique: true
   end
 
   create_table "options", force: :cascade do |t|
@@ -31,17 +39,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_075548) do
   create_table "players", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.boolean "eliminated"
-    t.string "email"
     t.integer "game_id"
-    t.boolean "is_host"
-    t.string "password_digest"
     t.integer "score"
-    t.string "token"
     t.datetime "updated_at", null: false
     t.string "username"
-    t.index ["email"], name: "index_players_on_email", unique: true, where: "email IS NOT NULL"
     t.index ["game_id"], name: "index_players_on_game_id"
-    t.index ["token"], name: "index_players_on_token", unique: true
   end
 
   create_table "questions", force: :cascade do |t|
