@@ -7,6 +7,7 @@ class Game < ApplicationRecord
 
   validates :name, presence: true
   validates :game_code, presence: true, uniqueness: true
+  validates :player_limit, numericality: { greater_than: 0 }
 
   private
 

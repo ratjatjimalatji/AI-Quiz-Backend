@@ -10,6 +10,11 @@ class PlayersController < ApplicationController
   def create
     game = Game.find_by!(game_code: params[:game_code])
 
+    if @game.players.count >= @game.player_limit
+    render json: { error: "Game is full" }, status: :unprocessable_entity
+    return
+    end
+
      player = game.players.create!(
       username: player_params[:username]
     )
