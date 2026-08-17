@@ -38,7 +38,7 @@ end
     else
       render json: round.errors, status: :unprocessable_entity
     end
-  endn
+  end
 
   private
 
