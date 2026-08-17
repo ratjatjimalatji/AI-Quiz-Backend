@@ -10,7 +10,6 @@ class Question < ApplicationRecord
     drag_drop_order: 3
   }
   before_validation :set_default_correct_answer_ids, on: :create
-  before_validation :set_default_round_id, on: :create
 
   private
 
@@ -19,10 +18,4 @@ class Question < ApplicationRecord
 
     self.correct_answer_ids = []
   end
-
-  def set_default_round_id
-    return if round_id.present?
-
-    self.round_id = nil
-end 
 end
