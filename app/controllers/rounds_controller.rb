@@ -28,8 +28,8 @@ end
     if round.save
       render json: round.as_json(
   include: {
-    questions: { #nested in round
-      except: [:correct_answer_ids], # dont show column
+    questions: {
+      except: [:correct_answer_ids], 
       include: :options
     }
   }
