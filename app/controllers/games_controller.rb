@@ -1,25 +1,18 @@
 class GamesController < ApplicationController
- before_action :authenticate_host!, only: [:create]
+ before_action :authenticate_host!, only: [ :create ]
 
     def index
     games = Game.all
     render json: games
-  end
+    end
 
   def create
-    game = Game.new(game_params)
-    if game.save
-         host = game.players.create!(
-      username: params[:host_username],
-      is_host: true,
-      score: 0,
-      eliminated: false
-    )
-      render json: game, status: :created
-    else
-      render json: { errors: game.errors },
-             status: :unprocessable_entity
-    end
+     game = current_host.games.create!(name: params[:name])
+
+    render json: {
+      id: game.id,
+      code: game.code
+    }, status: :created
   end
 
   private

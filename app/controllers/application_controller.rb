@@ -1,13 +1,12 @@
 class ApplicationController < ActionController::API
-    attr_reader :current_host
+    def current_host
+      @current_host ||= Host.find_by(token: extract_token) if extract_token.present?
+    end
 
     def authenticate_host!
-        token = extract_token
-        @current_host = Player.hosts.find_by(token: token) if token.present?
+        return if @current_host
 
-        unless @current_host
-            render json: { error: "Unauthorized"}, status: :unauthorized
-        end
+        render json: { error: "Unauthorized" }, status: :unauthorized
     end
 
     private
