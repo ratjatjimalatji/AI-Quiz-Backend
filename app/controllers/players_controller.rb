@@ -11,7 +11,7 @@ class PlayersController < ApplicationController
     game = Game.find_by!(game_code: params[:game_code])
 
     if @game.players.count >= @game.player_limit
-    render json: { error: "Game is full" }, status: :unprocessable_entity
+    render json: { error: I18n.t("activerecord.errors.models.game.attributes.player_limit.limit_exceeded") }, status: :unprocessable_entity
     return
     end
 

@@ -28,4 +28,36 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  networking:
+    errors:
+        unauthorized: "You are not authorized to perform this action."
+        invalid_token: "The provided token is invalid."
+        missing_token: "Authentication token is missing."
+        forbidden: "You do not have permission to access this resource."
+        not_found: "The requested resource could not be found."
+        bad_request: "The request was invalid."
+        server_error: "Something went wrong on the server."
+
+  activerecord:
+    errors:
+      models:
+        game:
+          attributes:
+            player_limit:
+              greater_than: "must allow at least one player"
+              limit_exceeded: "has reached the maximum number of players"
+            game_code:
+              blank: "must be provided"
+
+        player:
+          attributes:
+            username:
+              blank: "is required"
+
+        host:
+          attributes:
+            name:
+              blank: "is required"
+            token:
+              blank: "is required"
+              taken: "has already been used"

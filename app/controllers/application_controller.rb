@@ -1,12 +1,14 @@
 class ApplicationController < ActionController::API
     def current_host
-      @current_host ||= Host.find_by(token: extract_token) if extract_token.present?
+     unless @current_host ||= Host.find_by(token: extract_token) if extract_token.present?
+       render json: { error: I18n.t("networking.errors.missing_token") }, status: :unauthorized
+     end
     end
 
     def authenticate_host!
         return if @current_host
 
-        render json: { error: "Unauthorized" }, status: :unauthorized
+        render json: { error: I18n.t("networking.errors.unauthorized") }, status: :unauthorized
     end
 
     private
@@ -22,7 +24,7 @@ class ApplicationController < ActionController::API
 
     def authorize_game_host!(game)
         unless @current_host && game.players.exists?(id: @current_host.id, is_host: true)
-        render json: { error: "Forbidden: You are not the game host" }, status: :forbidden
+        render json: { error: I18n.t("networking.errors.forbidden")}, status: :forbidden
         end
     end
 end
