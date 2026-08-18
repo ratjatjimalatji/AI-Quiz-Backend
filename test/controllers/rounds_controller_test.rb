@@ -5,14 +5,22 @@ class RoundsControllerTest < ActionDispatch::IntegrationTest
     get rounds_index_url
     assert_response :success
   end
+ test "should create round" do
+  game = games(:one)
 
-  test "should get create" do
-    get rounds_create_url
-    assert_response :success
-  end
+  post rounds_url, params: {
+    round: {
+      title: "Test Round",
+      round_type: "qualifier",
+      game_id: game.id
+    }
+  }
+
+  assert_response :created
+end
 
   test "should get show" do
-    get rounds_show_url
+    get round_url(rounds(:one))
     assert_response :success
   end
 end
