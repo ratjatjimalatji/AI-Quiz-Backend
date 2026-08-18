@@ -24,5 +24,5 @@ class Question < ApplicationRecord
     return if round_id.present?
 
     self.round_id = nil
-end 
+  end
 end

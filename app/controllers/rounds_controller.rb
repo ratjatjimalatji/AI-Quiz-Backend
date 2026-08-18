@@ -1,14 +1,14 @@
 class RoundsController < ApplicationController
   def index
-  render json: Round.all.as_json(
-    include: {
-      questions: {
-        except: [ :correct_answer_ids ],
-        include: :options
+    render json: Round.all.as_json(
+      include: {
+        questions: {
+          except: [ :correct_answer_ids ],
+          include: :options
+        }
       }
-    }
-  )
-end
+    )
+  end
 
   def show
     round = Round.find(params[:id])
@@ -43,25 +43,25 @@ end
   private
 
   def round_params
-  params.require(:round).permit(
-    :title,
-    :round_type,
-    :game_id,
-    questions_attributes: [
-      :id,
+    params.require(:round).permit(
       :title,
-      :question_type,
-      :_destroy,
-      {
-        correct_answer_ids: [],
-        options_attributes: [
-          :id,
-          :text,
-          :position,
-          :_destroy
-        ]
-      }
-    ]
-  )
-end
+      :round_type,
+      :game_id,
+      questions_attributes: [
+        :id,
+        :title,
+        :question_type,
+        :_destroy,
+        {
+          correct_answer_ids: [],
+          options_attributes: [
+            :id,
+            :text,
+            :position,
+            :_destroy
+          ]
+        }
+      ]
+    )
+  end
 end
