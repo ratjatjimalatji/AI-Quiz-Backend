@@ -14,9 +14,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_16_111120) do
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "game_code"
+    t.integer "host_id", null: false
     t.integer "player_limit"
     t.string "status"
     t.datetime "updated_at", null: false
+    t.index ["host_id"], name: "index_games_on_host_id"
   end
 
   create_table "hosts", force: :cascade do |t|
@@ -24,7 +26,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_16_111120) do
     t.string "name"
     t.string "token", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
     t.index ["token"], name: "index_hosts_on_token", unique: true
+    t.index ["user_id"], name: "index_hosts_on_user_id"
   end
 
   create_table "options", force: :cascade do |t|
@@ -72,6 +76,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_16_111120) do
     t.string "username"
   end
 
+  add_foreign_key "games", "hosts"
+  add_foreign_key "hosts", "users"
   add_foreign_key "options", "questions"
   add_foreign_key "players", "games"
   add_foreign_key "questions", "rounds"
