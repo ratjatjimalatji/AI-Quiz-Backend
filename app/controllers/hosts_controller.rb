@@ -4,7 +4,13 @@ class HostsController < ApplicationController
   end
 
   def create
-      host = Host.create!(name: params[:name])
+      host = Host.create!(host_params)
       render json: { id: host.id, token: host.token }, status: :created
   end
+
+    private
+
+    def host_params
+      params.require(:host).permit(:name)
+    end
 end

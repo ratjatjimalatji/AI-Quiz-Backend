@@ -9,7 +9,7 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
   test "should create player" do
     game = games(:one)
 
-    post players_url, params: {
+    post create_player_game_url(game.id), params: {
       player: {
         username: "Test Player"
       },

@@ -11,8 +11,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
   resources :players, only: [ :index, :create, :show ]
-  resources :games, only: [ :index, :create ]
-  resources :questions, only: [ :index, :create, :show, :update ]
+  resources :games, only: [ :index, :create ] # rubocop:disable Layout/SpaceInsideArrayLiteralBrackets
+  resources :questions, only: [ :index, :create, :show ]
   resources :rounds, only: [ :index, :create, :show ]
   resources :hosts, only: [ :index, :create ]
 end
