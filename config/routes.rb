@@ -14,4 +14,5 @@ Rails.application.routes.draw do
   resources :games, only: [ :index, :create ] # rubocop:disable Layout/SpaceInsideArrayLiteralBrackets
   resources :questions, only: [ :index, :create, :show ]
   resources :rounds, only: [ :index, :create, :show ]
+  resources :hosts, only: [ :index, :create ]
 end
