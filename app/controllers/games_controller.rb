@@ -7,12 +7,31 @@ class GamesController < ApplicationController
     end
 
   def create
-     game = current_host.games.create!(name: params[:name])
+    game = current_host.games.create!(game_params)
+    render json: { id: game.id, code: game.code }, status: :created
+  end
 
-    render json: {
-      id: game.id,
-      code: game.code
-    }, status: :created
+  def create_player
+    game = Game.find_by!(game_code: params[:game_code])
+
+    if game.players.count >= game.player_limit
+      render json: {
+        error: I18n.t(
+          "activerecord.errors.models.game.attributes.player_limit.limit_exceeded"
+        )
+      }, status: :unprocessable_entity
+      return
+    end
+
+    player = game.players.build(
+      username: player_params[:username]
+    )
+
+    if player.save
+      render json: player, status: :created
+    else
+      render json: player.errors, status: :unprocessable_entity
+    end
   end
 
   private
@@ -23,5 +42,9 @@ class GamesController < ApplicationController
       :status,
       :host_id
     )
+  end
+
+  def player_params
+    params.require(:player).permit(:username)
   end
 end
