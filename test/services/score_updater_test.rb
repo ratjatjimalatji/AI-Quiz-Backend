@@ -1,7 +1,7 @@
 require "test_helper"
 
 class ScoreUpdaterTest < ActiveSupport::TestCase
-  test "adds calculated points to the player's existing score" do
+  test "adds calculated points to the player" do
     game = games(:one)
 
     player = Player.create!(
@@ -36,7 +36,7 @@ class ScoreUpdaterTest < ActiveSupport::TestCase
     assert_equal 50, player.reload.score
   end
 
-  test "adds points to a player whose score is zero" do
+  test "adds points to a player with no points" do
     game = games(:one)
     player = Player.create!(
       username: "Charlie",
