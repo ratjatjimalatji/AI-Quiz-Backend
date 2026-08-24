@@ -16,11 +16,12 @@ class ScoreUpdaterTest < ActiveSupport::TestCase
       response_time_ms: 10_000
     )
 
-    assert_equal 140, player.reload.score
+    assert_equal 145, player.reload.score
   end
 
   test "does not change the player's score when the answer is incorrect" do
     game = games(:one)
+
     player = Player.create!(
       username: "Bob",
       score: 50,
@@ -36,8 +37,9 @@ class ScoreUpdaterTest < ActiveSupport::TestCase
     assert_equal 50, player.reload.score
   end
 
-  test "adds points to a player with no points" do
+  test "adds full points to a player with no points within the first 5 seconds" do
     game = games(:one)
+
     player = Player.create!(
       username: "Charlie",
       score: 0,
@@ -50,6 +52,6 @@ class ScoreUpdaterTest < ActiveSupport::TestCase
       response_time_ms: 2_000
     )
 
-    assert_equal 98, player.reload.score
+    assert_equal 100, player.reload.score
   end
 end
