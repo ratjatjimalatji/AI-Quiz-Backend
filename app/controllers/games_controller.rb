@@ -8,11 +8,11 @@ class GamesController < ApplicationController
 
   def create
     game = current_host.games.create!(game_params)
-    render json: { id: game.id, code: game.code }, status: :created
+    render json: { id: game.id, code: game.game_code }, status: :created
   end
 
   def create_player
-    game = Game.find_by!(game_code: params[:game_code])
+    game = Game.find_by!(params[:id])
 
     if game.players.count >= game.player_limit
       render json: {
