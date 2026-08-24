@@ -12,7 +12,7 @@ class GamesController < ApplicationController
   end
 
   def create_player
-    game = Game.find_by!(params[:id])
+    game = Game.find(params[:id])
 
     if game.players.count >= game.player_limit
       render json: {
