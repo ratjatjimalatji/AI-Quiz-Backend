@@ -14,4 +14,5 @@ Rails.application.routes.draw do
   resources :games, only: [ :index, :create ]
   resources :questions, only: [ :index, :create, :show, :update ]
   resources :rounds, only: [ :index, :create, :show ]
+  resources :hosts, only: [ :index, :create ]
 end

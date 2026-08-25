@@ -5,7 +5,6 @@ class Game < ApplicationRecord
   has_many :players, dependent: :destroy
   has_many :rounds, dependent: :destroy
 
-  validates :name, presence: true
   validates :game_code, presence: true, uniqueness: true
   validates :player_limit, numericality: { greater_than: 0 }
 

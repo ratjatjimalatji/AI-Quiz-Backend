@@ -25,8 +25,12 @@ class RoundsController < ApplicationController
     params.require(:round).permit(
       :title,
       :round_type,
+      :game_id,
       questions_attributes: [
-        :id, :title, :question_type, :_destroy,
+        :id,
+        :title,
+        :question_type,
+        :_destroy,
         {
         correct_answer_ids: [],
         options_attributes: [ :id, :text, :position, :_destroy ]
