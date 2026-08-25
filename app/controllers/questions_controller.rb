@@ -2,30 +2,21 @@ class QuestionsController < ApplicationController
   before_action :authenticate_host!, only: [ :create ]
   before_action :set_question, only: :update
   def index
-    render json: Question.all.as_json(
-      except: [ :correct_answer_ids ],
-      include: :options
-      )
+    questions = Question.all
+    render json: questions
   end
 
   def show
     question = Question.find(params[:id])
-    render json: question.as_json(
-      except: [ :correct_answer_ids ],
-    include: :options
-    )
+    render json: question
   end
 
   def create
     question = Question.new(question_params)
     if question.save
-      render json: question.as_json(
-        except: [ :correct_answer_ids ],
-        include: :options
-      ),
-       status: :created
+      render json: question, status: :created
     else
-      render json: question.errors, status: :unprocessable_entity
+      render json: { errors: question.errors.full_message }, status: :unprocessable_entity
     end
   end
 
