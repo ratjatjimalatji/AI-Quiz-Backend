@@ -1,42 +1,21 @@
 class RoundsController < ApplicationController
   def index
-  render json: Round.all.as_json(
-    include: {
-      questions: {
-        except: [:correct_answer_ids],
-        include: :options
-      }
-    }
-  )
-end
+    rounds = Round.includes(question: :options).all
+    render json: rounds
+  end
 
   def show
     round = Round.find(params[:id])
-    render json: round.as_json(
-  include: {
-    questions: {
-      except: [:correct_answer_ids],
-      include: :options
-    }
-  }
-)
+    render json: round
   end
 
   def create
     round = Round.new(round_params)
 
     if round.save
-      render json: round.as_json(
-  include: {
-    questions: {
-      except: [:correct_answer_ids], 
-      include: :options
-    }
-  }
-),
-       status: :created
+      render json: round, status: :created
     else
-      render json: round.errors, status: :unprocessable_entity
+      render json: { errors: round.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -50,7 +29,7 @@ end
         :id, :title, :question_type, :_destroy,
         {
         correct_answer_ids: [],
-        options_attributes: [:id, :text, :position, :_destroy]
+        options_attributes: [ :id, :text, :position, :_destroy ]
       }
       ]
     )
