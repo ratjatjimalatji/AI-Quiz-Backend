@@ -16,7 +16,7 @@ class QuestionsController < ApplicationController
     if question.save
       render json: question, status: :created
     else
-      render json: { errors: question.errors.full_message }, status: :unprocessable_entity
+      render json: { errors: question.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
