@@ -1,6 +1,6 @@
 class RoundsController < ApplicationController
   def index
-    rounds = Round.includes(question: :options).all
+    rounds = Round.includes(questions: :options).all
     render json: rounds
   end
 
