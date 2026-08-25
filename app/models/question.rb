@@ -9,6 +9,15 @@ class Question < ApplicationRecord
     multiple_choice: 2,
     drag_drop_order: 3
   }
+
+  def as_json(options = {})
+    default_options = {
+      except: [ :correct_answer_ids ],
+      include: :options
+    }
+    super(default_options.deep_merge(options))
+  end
+
   before_validation :set_default_correct_answer_ids, on: :create
 
   private
