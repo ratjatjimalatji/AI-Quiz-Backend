@@ -6,7 +6,7 @@ class ApplicationController < ActionController::API
     end
 
     def authenticate_host!
-        return if @current_host
+        return if current_host
 
         render json: { error: I18n.t("networking.errors.unauthorized") }, status: :unauthorized
     end
@@ -24,7 +24,7 @@ class ApplicationController < ActionController::API
 
     def authorize_game_host!(game)
         unless @current_host && game.players.exists?(id: @current_host.id, is_host: true)
-        render json: { error: I18n.t("networking.errors.forbidden")}, status: :forbidden
+        render json: { error: I18n.t("networking.errors.forbidden") }, status: :forbidden
         end
     end
 end
