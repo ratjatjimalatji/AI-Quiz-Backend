@@ -1,16 +1,8 @@
 class GamesController < ApplicationController
- before_action :authenticate_host!, only: [ :create ]
-
     def index
     games = Game.all
     render json: games
     end
-
-  def create
-    game = current_host.games.create!(game_params)
-    render json: { id: game.id, code: game.game_code }, status: :created
-  end
-
   def create_player
     game = Game.find(params[:id])
 
@@ -28,6 +20,16 @@ class GamesController < ApplicationController
     )
 
     if player.save
+
+       ActionCable.server.broadcast(
+      "game_room_#{game.game_code}",
+      {
+        event: "player_joined",
+        player: { id: player.id, username: player.username },
+        total_players: game.players.count,
+        player_limit: game.player_limit
+      }
+    )
       render json: player, status: :created
     else
       render json: player.errors, status: :unprocessable_entity

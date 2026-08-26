@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_17_091546) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_25_121030) do
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "game_code"
     t.integer "host_id", null: false
-    t.integer "player_limit"
+    t.integer "player_limit", default: 8, null: false
     t.string "status"
     t.datetime "updated_at", null: false
     t.index ["host_id"], name: "index_games_on_host_id"
@@ -67,6 +67,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_091546) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["game_id"], name: "index_rounds_on_game_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.datetime "updated_at", null: false
+    t.string "username"
   end
 
   add_foreign_key "games", "hosts"
