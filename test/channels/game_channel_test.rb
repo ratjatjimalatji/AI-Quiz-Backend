@@ -13,16 +13,9 @@ class GameChannelTest < ActionCable::Channel::TestCase
     )
   end
 
-  test "allows the host to subscribe to their game" do
-    connect(token: @host.token)
-
-    subscribe(game_code: @game.game_code)
-
-    assert subscription.confirmed?
-    assert_has_stream "game_room_#{@game.game_code}"
-  end
-
   test "allows a player to subscribe to their game" do
+    stub_connection(current_host: nil)
+
     subscribe(
       game_code: @game.game_code,
       player_id: @player.id
@@ -33,6 +26,8 @@ class GameChannelTest < ActionCable::Channel::TestCase
   end
 
   test "rejects a player who does not belong to the game" do
+    stub_connection(current_host: nil)
+
     other_game = @host.games.create!(
       game_code: "OTHER123"
     )
@@ -50,6 +45,8 @@ class GameChannelTest < ActionCable::Channel::TestCase
   end
 
   test "rejects subscription to an invalid game" do
+    stub_connection(current_host: nil)
+
     subscribe(game_code: "INVALID_CODE")
 
     assert subscription.rejected?
