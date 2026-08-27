@@ -20,11 +20,18 @@ class HostsController < ApplicationController
       "game_room_#{game.game_code}",
       {
         event: "game_created",
-        host: { id: current_host.id, name: current_host.name },
         game_code: game.game_code,
         total_players: game.players.count
       }
     )
+
+     ActionCable.server.broadcast(
+      "game_room_#{game.game_code}",
+      {
+        event: "host_joined",
+        host: { id: current_host.id, name: current_host.name }
+      }
+     )
 
     render json: { id: game.id, code: game.game_code }, status: :created
     end
