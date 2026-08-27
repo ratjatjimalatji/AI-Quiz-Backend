@@ -8,6 +8,29 @@ class HostsController < ApplicationController
       render json: { id: host.id, token: host.token }, status: :created
   end
 
+  def create_game
+    game = current_host.games.create!
+
+    puts "AUTH HEADER: #{request.headers["Authorization"].inspect}"
+    puts "PARAMS: #{params.inspect}"
+
+    if game.save
+
+       ActionCable.server.broadcast(
+      "game_room_#{game.game_code}",
+      {
+        event: "game_created",
+        host: { id: current_host.id, name: current_host.name },
+        game_code: game.game_code,
+        total_players: game.players.count
+      }
+    )
+
+    render json: { id: game.id, code: game.game_code }, status: :created
+    end
+  end
+
+
     private
 
     def host_params

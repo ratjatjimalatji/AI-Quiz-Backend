@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_17_091546) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_27_094717) do
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "game_code"
     t.integer "host_id", null: false
-    t.integer "player_limit"
-    t.string "status"
+    t.integer "player_limit", default: 8, null: false
+    t.string "status", default: "waiting"
     t.datetime "updated_at", null: false
     t.index ["host_id"], name: "index_games_on_host_id"
   end
@@ -41,9 +41,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_091546) do
 
   create_table "players", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.boolean "eliminated"
+    t.boolean "eliminated", default: false
     t.integer "game_id"
-    t.integer "score"
+    t.integer "score", default: 0
     t.datetime "updated_at", null: false
     t.string "username"
     t.index ["game_id"], name: "index_players_on_game_id"
