@@ -13,10 +13,9 @@ class ApplicationController < ActionController::API
 
     def extract_token
         header = request.headers[Networking::Headers::AUTHORIZATION]
+        puts "AUTH HEADER: #{header.inspect}"
         if header.present? && header.start_with?(Networking::Authentication::BEARER)
             header.split(" ").last
-        else
-            request.headers["X-Host-Token"] || params[:token]
         end
     end
 
