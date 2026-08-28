@@ -13,4 +13,10 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 8, game.player_limit
     assert_equal host, game.host
   end
+  test "creates a player with a token" do
+    host = hosts(:one)
+    game = host.games.create!
+    player = game.players.create!(username: "KingOfCode")
+    assert_not_nil player.token assert_not_empty player.token
+  end
 end

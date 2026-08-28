@@ -1,15 +1,8 @@
 class GamesController < ApplicationController
- before_action :authenticate_host!, only: [ :create ]
-
     def index
     games = Game.all
     render json: games
     end
-
-  def create
-    game = current_host.games.create!(game_params)
-    render json: { id: game.id, code: game.game_code }, status: :created
-  end
 
   def create_player
     game = Game.find(params[:id])

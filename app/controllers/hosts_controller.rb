@@ -1,4 +1,5 @@
 class HostsController < ApplicationController
+before_action :authenticate_host!, only: [ :create_game ]
   def index
       render json: Host.all
   end
