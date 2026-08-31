@@ -35,6 +35,6 @@ class GameChannel < ApplicationCable::Channel
   end
 
   def player_authorized?(game)
-    game.players.exists?(id: params[:player_id])
+    game.players.exists?(id: connection.current_player&.id)
   end
 end
