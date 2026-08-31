@@ -11,7 +11,6 @@ class RoundsControllerTest < ActionDispatch::IntegrationTest
   post rounds_url, params: {
     round: {
       title: "Test Round",
-      round_type: "qualifier",
       game_id: game.id
     }
   }
