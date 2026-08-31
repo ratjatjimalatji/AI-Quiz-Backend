@@ -2,7 +2,9 @@ require "test_helper"
 
 class GameChannelTest < ActionCable::Channel::TestCase
   setup do
-    @host = Host.create!(name: "Test Host")
+    @host = Host.create!(
+      name: "Test Host"
+    )
 
     @game = @host.games.create!(
       game_code: "TEST123"
@@ -14,11 +16,12 @@ class GameChannelTest < ActionCable::Channel::TestCase
   end
 
   test "allows a player to subscribe to their game" do
-    stub_connection(current_host: nil)
+    stub_connection(
+      current_player: @player
+    )
 
     subscribe(
-      game_code: @game.game_code,
-      player_id: @player.id
+      game_code: @game.game_code
     )
 
     assert subscription.confirmed?
@@ -26,8 +29,6 @@ class GameChannelTest < ActionCable::Channel::TestCase
   end
 
   test "rejects a player who does not belong to the game" do
-    stub_connection(current_host: nil)
-
     other_game = @host.games.create!(
       game_code: "OTHER123"
     )
@@ -36,18 +37,25 @@ class GameChannelTest < ActionCable::Channel::TestCase
       username: "Bob"
     )
 
+    stub_connection(
+      current_player: other_player
+    )
+
     subscribe(
-      game_code: @game.game_code,
-      player_id: other_player.id
+      game_code: @game.game_code
     )
 
     assert subscription.rejected?
   end
 
   test "rejects subscription to an invalid game" do
-    stub_connection(current_host: nil)
+    stub_connection(
+      current_player: @player
+    )
 
-    subscribe(game_code: "INVALID_CODE")
+    subscribe(
+      game_code: "INVALID_CODE"
+    )
 
     assert subscription.rejected?
   end

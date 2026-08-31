@@ -2,11 +2,17 @@ class GameChannel < ApplicationCable::Channel
   def subscribed
     @game = Game.find_by(game_code: params[:game_code])
 
-    if @game && (host_authorized?(@game) || player_authorized?(@game))
-      stream_from "game_room_#{@game.game_code}"
+    return reject unless @game
+
+    if connection.current_player
+      return reject unless player_authorized?(@game)
+    elsif connection.current_host
+      return reject unless host_authorized?(@game)
     else
-      reject
+      return reject
     end
+
+    stream_from "game_room_#{@game.game_code}"
   end
 
   def unsubscribed
