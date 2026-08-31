@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_27_120405) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_28_080254) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -18,8 +18,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_120405) do
     t.datetime "created_at", null: false
     t.string "game_code"
     t.integer "host_id", null: false
-    t.integer "player_limit"
-    t.string "status"
+    t.integer "player_limit", default: 8, null: false
+    t.string "status", default: "waiting"
     t.datetime "updated_at", null: false
     t.index ["host_id"], name: "index_games_on_host_id"
   end
@@ -44,12 +44,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_120405) do
 
   create_table "players", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.boolean "eliminated"
+    t.boolean "eliminated", default: false
     t.integer "game_id"
-    t.integer "score"
+    t.integer "score", default: 0
+    t.string "token"
     t.datetime "updated_at", null: false
     t.string "username"
     t.index ["game_id"], name: "index_players_on_game_id"
+    t.index ["token"], name: "index_players_on_token", unique: true
   end
 
   create_table "questions", force: :cascade do |t|
