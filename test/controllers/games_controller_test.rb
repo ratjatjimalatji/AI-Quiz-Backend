@@ -17,6 +17,7 @@ class GamesControllerTest < ActionDispatch::IntegrationTest
     host = hosts(:one)
     game = host.games.create!
     player = game.players.create!(username: "KingOfCode")
-    assert_not_nil player.token assert_not_empty player.token
+    assert_not_nil player.token
+    assert_not_empty player.token
   end
 end
