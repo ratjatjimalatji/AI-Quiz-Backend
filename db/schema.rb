@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_17_091546) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_27_091601) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "game_code"
@@ -26,7 +29,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_091546) do
     t.string "name"
     t.string "token", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
     t.index ["token"], name: "index_hosts_on_token", unique: true
+    t.index ["user_id"], name: "index_hosts_on_user_id"
   end
 
   create_table "options", force: :cascade do |t|
@@ -62,14 +67,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_091546) do
 
   create_table "rounds", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "game_id", null: false
+    t.integer "game_id"
     t.integer "round_type", default: 0, null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["game_id"], name: "index_rounds_on_game_id"
   end
 
+  create_table "users", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.datetime "updated_at", null: false
+    t.string "username"
+  end
+
   add_foreign_key "games", "hosts"
+  add_foreign_key "hosts", "users"
   add_foreign_key "options", "questions"
   add_foreign_key "players", "games"
   add_foreign_key "questions", "rounds"
