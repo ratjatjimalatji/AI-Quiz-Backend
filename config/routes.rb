@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   resources :games, only: [ :index ] do
     post :create_player, on: :member
   end
-  resources :questions, only: [ :index, :create, :show ]
+  resources :questions, only: [ :index, :create, :show , :update]
   resources :rounds, only: [ :index, :create, :show ]
   resources :hosts, only: [ :index, :create ] do
     post :create_game, on: :member

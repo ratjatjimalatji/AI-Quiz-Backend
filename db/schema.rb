@@ -67,8 +67,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_080254) do
 
   create_table "rounds", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "game_id", null: false
-    t.integer "round_type", default: 0, null: false
+    t.integer "game_id"
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["game_id"], name: "index_rounds_on_game_id"
