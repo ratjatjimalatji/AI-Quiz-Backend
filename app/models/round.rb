@@ -1,7 +1,9 @@
 class Round < ApplicationRecord
     belongs_to :game, optional: true
-    has_many :questions, -> { order(:position) }, dependent: :destroy, inverse_of: :round
+    has_many :questions, -> { order(:position, :id) }, dependent: :destroy, inverse_of: :round
     accepts_nested_attributes_for :questions, allow_destroy: true
+
+    scope :ordered, -> { order(:position, :id) }
 
   def as_json(options = {})
     default_options = {
