@@ -9,27 +9,18 @@ module ApplicationCable
     private
 
     def authenticate_connection
-      if (host = find_host)
+      token = request.params[:token].presence ||
+              request.headers[Networking::Headers::TOKEN].presence
+
+      return reject_unauthorized_connection if token.blank?
+
+      if (host = Host.find_by(token: token))
         self.current_host = host
-      elsif (player = find_player)
+      elsif (player = Player.find_by(token: token))
         self.current_player = player
       else
         reject_unauthorized_connection
       end
-    end
-
-    def find_host
-      token = request.params[:token] ||
-              request.headers[Networking::Headers::TOKEN]
-
-      Host.find_by(token: token)
-    end
-
-    def find_player
-      token = request.params[:token] ||
-              request.headers[Networking::Headers::TOKEN]
-
-      Player.find_by(token: token)
     end
   end
 end
