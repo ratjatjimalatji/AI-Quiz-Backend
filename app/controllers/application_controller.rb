@@ -9,6 +9,15 @@ class ApplicationController < ActionController::API
         render json: { error: I18n.t("networking.errors.unauthorized") }, status: :unauthorized
     end
 
+    def current_player
+        token = extract_token
+        Player.find_by(token: token)
+    end
+
+    def authenticate_player!
+        reject unless current_player
+    end
+
     private
 
     def extract_token

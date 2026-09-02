@@ -1,6 +1,7 @@
 class Question < ApplicationRecord
   belongs_to :round, inverse_of: :questions, optional: true
   has_many :options, -> { order(:position) }, dependent: :destroy, inverse_of: :question
+  has_many :submissions, dependent: :destroy
   accepts_nested_attributes_for :options, allow_destroy: true
 
   enum :question_type, {
