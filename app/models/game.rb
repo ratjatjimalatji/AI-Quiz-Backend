@@ -83,6 +83,6 @@ class Game < ApplicationRecord
   end
 
   def generate_game_code
-    self.game_code = SecureRandom.hex(6).upcase
+    self.game_code = SecureRandom.hex(3).upcase
   end
 end

@@ -54,6 +54,16 @@ class GamesController < ApplicationController
         player_limit: game.player_limit
       }
     )
+
+       ActionCable.server.broadcast(
+      "game_room_#{game.game_code}",
+      {
+        event: "player_joined",
+        player: { id: player.id, username: player.username },
+        total_players: game.players.count,
+        player_limit: game.player_limit
+      }
+    )
       render json: player, status: :created
     else
       render json: player.errors, status: :unprocessable_entity
