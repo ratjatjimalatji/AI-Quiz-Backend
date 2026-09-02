@@ -11,6 +11,8 @@ class Game < ApplicationRecord
   validates :game_code, presence: true, uniqueness: true
   validates :player_limit, numericality: { greater_than: 0 }
 
+  after_create :populate_quiz_data
+
   enum :status, {
     waiting: "waiting",
     in_progress: "in_progress",
@@ -84,5 +86,9 @@ class Game < ApplicationRecord
 
   def generate_game_code
     self.game_code = SecureRandom.hex(3).upcase
+  end
+
+  def populate_quiz_data
+        QuizPopulator.call(self)
   end
 end
