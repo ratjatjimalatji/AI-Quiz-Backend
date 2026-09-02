@@ -28,7 +28,14 @@ class GamesController < ApplicationController
   end
 
   def create_player
-    game = Game.find(params[:id])
+    game_code = params[:game_code]
+
+    if game_code.blank?
+      render json: { error: "game_code is required" }, status: :bad_request
+      return
+    end
+
+    game = Game.find_by(game_code: game_code)
 
     if game.players.count >= game.player_limit
       render json: {
