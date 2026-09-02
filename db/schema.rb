@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema[8.1].define(version: 2026_09_01_112857) do
-=======
-ActiveRecord::Schema[8.1].define(version: 2026_08_28_080254) do
->>>>>>> develop
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,14 +20,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_080254) do
     t.bigint "current_round_id"
     t.string "game_code"
     t.integer "host_id", null: false
-<<<<<<< HEAD
-    t.integer "player_limit"
-    t.datetime "question_started_at"
-    t.string "status"
-=======
     t.integer "player_limit", default: 8, null: false
     t.string "status", default: "waiting"
->>>>>>> develop
     t.datetime "updated_at", null: false
     t.index ["current_question_id"], name: "index_games_on_current_question_id"
     t.index ["current_round_id"], name: "index_games_on_current_round_id"
