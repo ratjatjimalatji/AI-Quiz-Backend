@@ -14,15 +14,12 @@ class ScoreUpdater
   end
 
   def call
-    return 0 unless @correct
-
+    return unless @correct
     points = ScoreCalculator.call(
       correct: @correct,
       response_time_ms: @response_time_ms
     )
 
     @player.increment!(:score, points)
-
-    points
   end
 end
