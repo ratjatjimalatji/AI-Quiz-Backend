@@ -21,9 +21,11 @@ class Game < ApplicationRecord
     with_lock do
       return false if completed?
 
+    global_rounds = Round.where(game_id: nil).ordered
+
       # 1. Starting the game from pending state
       if waiting? || current_round.nil?
-        first_round = rounds.ordered.first
+        first_round = global_rounds.ordered.first
         return false unless first_round
 
         first_question = first_round.questions.first
@@ -47,7 +49,7 @@ class Game < ApplicationRecord
       end
 
       # 3. Last question reached: Check for the next round
-      next_round = rounds.where("position > ? OR (position = ? AND id > ?)",
+      next_round = global_rounds.where("position > ? OR (position = ? AND id > ?)",
                                 current_round.position,
                                 current_round.id)
                          .order(:position, :id)
