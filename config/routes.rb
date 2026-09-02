@@ -11,10 +11,12 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
   resources :players, only: [ :index, :show ]
-  resources :games, only: [ :index, :create ] do
-    post :create_player, on: :member
+  resources :games, only: [ :index ] do
+    post :create_player, on: :collection
   end
-  resources :questions, only: [ :index, :create, :show , :update]
+  resources :questions, only: [ :index, :create, :show, :update ]
   resources :rounds, only: [ :index, :create, :show ]
-  resources :hosts, only: [ :index, :create ]
+  resources :hosts, only: [ :index, :create ] do
+    post :create_game, on: :member
+  end
 end

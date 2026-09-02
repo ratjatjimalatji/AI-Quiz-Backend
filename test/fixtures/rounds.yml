@@ -6,10 +6,8 @@
 #
 one:
   title: General Knowledge
-  round_type: player_vs_player
   game: one
 
 two:
   title: Final Challenge
-  round_type: qualifier
   game: two
