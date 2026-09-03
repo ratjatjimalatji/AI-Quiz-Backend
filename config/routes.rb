@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   resources :players, only: [ :index, :show ]
   resources :games, only: [ :index ] do
     post :create_player, on: :collection
-    get :players, on: :collection
+    get :get_players, on: :collection
   end
   resources :questions, only: [ :index, :create, :show, :update ]
   resources :rounds, only: [ :index, :create, :show ]
