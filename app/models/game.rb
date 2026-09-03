@@ -12,62 +12,73 @@ class Game < ApplicationRecord
   validates :player_limit, numericality: { greater_than: 0 }
 
   enum :status, {
-    waiting: "waiting",
+    pending: "pending",
     in_progress: "in_progress",
     completed: "completed"
-  }, default: :waiting
+  }, default: :pending?
 
   def advance_step!
-    with_lock do
-      return false if completed?
+  with_lock do
+    return false if completed?
 
-      # 1. Starting the game from pending state
-      if waiting? || current_round.nil?
-        first_round = rounds.ordered.first
-        return false unless first_round
+    # 1. Start game if pending or current_round not set
+    if pending? || current_round.nil?
+      first_round = rounds.order(Arel.sql("COALESCE(position, 0) ASC"), :id).first
+      return false unless first_round
 
-        first_question = first_round.questions.first
-        return false unless first_question
+      first_question = first_round.questions.order(Arel.sql("COALESCE(position, 0) ASC"), :id).first
+      return false unless first_question
 
-        transition_to!(round: first_round, question: first_question, status: :in_progress)
-        return true
-      end
-
-      # 2. Check for the next question in the current round
-      next_question = current_round.questions
-                                   .where("position > ? OR (position = ? AND id > ?)",
-                                          current_question.position,
-                                          current_question.id)
-                                   .order(:position, :id)
-                                   .first
-
-      if next_question.present?
-        transition_to!(round: current_round, question: next_question)
-        return true
-      end
-
-      # 3. Last question reached: Check for the next round
-      next_round = rounds.where("position > ? OR (position = ? AND id > ?)",
-                                current_round.position,
-                                current_round.id)
-                         .order(:position, :id)
-                         .first
-
-      if next_round.present?
-        first_question_of_next_round = next_round.questions.first
-        transition_to!(round: next_round, question: first_question_of_next_round)
-        return true
-      end
-
-      # 4. No more rounds: Complete game
-      update!(
-        status: :completed,
-        current_question: nil,
-        question_started_at: nil
-      )
-      true
+      transition_to!(round: first_round, question: first_question, status: :in_progress)
+      return true
     end
+
+    # 2. Find next question in current round
+    current_question_position = current_question.position || 0
+    current_question_id  = current_question.id
+
+    next_question = current_round.questions
+      .where(
+        "COALESCE(position, 0) > ? OR (COALESCE(position, 0) = ? AND id > ?)",
+        current_question_position, current_question_position, current_question_id
+      )
+      .order(Arel.sql("COALESCE(position, 0) ASC"), :id)
+      .first
+
+    if next_question.present?
+      transition_to!(round: current_round, question: next_question)
+      return true
+    end
+
+    # 3. Last question reached: Find next round
+    current_round_position = current_round.position || 0
+    current_round_id  = current_round.id
+
+    next_round = rounds
+      .where(
+        "COALESCE(position, 0) > ? OR (COALESCE(position, 0) = ? AND id > ?)",
+        current_round_position, current_round_position, current_round_id
+      )
+      .order(Arel.sql("COALESCE(position, 0) ASC"), :id)
+      .first
+
+    if next_round.present?
+      first_question_of_next_round = next_round.questions
+                                               .order(Arel.sql("COALESCE(position, 0) ASC"), :id)
+                                               .first
+      transition_to!(round: next_round, question: first_question_of_next_round)
+      return true
+    end
+
+    # 4. No more rounds: Complete game
+    update!(
+      status: :completed,
+      current_question: nil,
+      question_started_at: nil
+    )
+    true
   end
+end
 
   private
 
