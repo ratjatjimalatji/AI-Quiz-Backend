@@ -77,6 +77,12 @@ class GamesController < ApplicationController
     end
   end
 
+  def get_players
+  game = Game.find_by!(game_code: params[:game_code])
+
+  render json: game.players.select(:id, :username)
+  end
+
   private
 
   def game_params

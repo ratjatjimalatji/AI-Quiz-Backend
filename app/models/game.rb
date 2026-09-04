@@ -46,6 +46,17 @@ def advance_step!
       )
       .order(Arel.sql("COALESCE(position, 0) ASC"), :id)
       .first
+    # 2. Find next question in current round
+    current_question_position = current_question.position || 0
+    current_question_id  = current_question.id
+
+    next_question = current_round.questions
+      .where(
+        "COALESCE(position, 0) > ? OR (COALESCE(position, 0) = ? AND id > ?)",
+        current_question_position, current_question_position, current_question_id
+      )
+      .order(Arel.sql("COALESCE(position, 0) ASC"), :id)
+      .first
 
     if next_question.present?
       transition_to!(round: current_round, question: next_question)
@@ -53,13 +64,24 @@ def advance_step!
     end
 
     # 3. Last question reached: Find next round
-    curr_r_pos = current_round.position || 0
-    curr_r_id  = current_round.id
+    current_round_position = current_round.position || 0
+    current_round_id  = current_round.id
 
     next_round = rounds
       .where(
         "COALESCE(position, 0) > ? OR (COALESCE(position, 0) = ? AND id > ?)",
-        curr_r_pos, curr_r_pos, curr_r_id
+        current_round_position, current_round_position, current_round_id
+      )
+      .order(Arel.sql("COALESCE(position, 0) ASC"), :id)
+      .first
+    # 3. Last question reached: Find next round
+    current_round_position = current_round.position || 0
+    current_round_id  = current_round.id
+
+    next_round = rounds
+      .where(
+        "COALESCE(position, 0) > ? OR (COALESCE(position, 0) = ? AND id > ?)",
+        current_round_position, current_round_position, current_round_id
       )
       .order(Arel.sql("COALESCE(position, 0) ASC"), :id)
       .first
