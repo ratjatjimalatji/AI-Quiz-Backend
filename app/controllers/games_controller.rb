@@ -3,9 +3,15 @@ class GamesController < ApplicationController
     games = Game.all
     render json: games
     end
-
   def create_player
-    game = Game.find(params[:id])
+    game_code = params[:game_code]
+
+    if game_code.blank?
+      render json: { error: "game_code is required" }, status: :bad_request
+      return
+    end
+
+    game = Game.find_by(game_code: game_code)
 
     if game.players.count >= game.player_limit
       render json: {
@@ -21,10 +27,26 @@ class GamesController < ApplicationController
     )
 
     if player.save
+
+       ActionCable.server.broadcast(
+      "game_room_#{game.game_code}",
+      {
+        event: "player_joined",
+        player: { id: player.id, username: player.username },
+        total_players: game.players.count,
+        player_limit: game.player_limit
+      }
+    )
       render json: player, status: :created
     else
       render json: player.errors, status: :unprocessable_entity
     end
+  end
+
+  def get_players
+  game = Game.find_by!(game_code: params[:game_code])
+
+  render json: game.players.select(:id, :username)
   end
 
   private
