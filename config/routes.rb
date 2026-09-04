@@ -12,10 +12,8 @@ Rails.application.routes.draw do
   # root "posts#index"
   resources :players, only: [ :index, :show ]
   resources :games, only: [ :index ] do
-      member do
     post :create_player, on: :collection
     get :get_players, on: :collection
-  end
 end
   resources :questions, only: [ :index, :create, :show, :update ]
   resources :rounds, only: [ :index, :create, :show ]
