@@ -2,7 +2,7 @@
 
 # A sample pre-deploy hook
 #
-# Checks the Github status of the build, waiting for a pending build to complete for up to 720 seconds.
+# Checks the Github status of the build, waiting for a waiting build to complete for up to 720 seconds.
 #
 # Fails unless the combined status is "success"
 #
@@ -63,7 +63,7 @@ class GithubStatusChecks
   end
 
   def complete_count
-    combined_status[:statuses].count { |status| status[:state] != "pending"}
+    combined_status[:statuses].count { |status| status[:state] != "waiting" }
   end
 
   def total_count
@@ -107,11 +107,11 @@ begin
       exit 0
     when "failure"
       exit_with_error "Checks failed, see #{checks.first_status_url}"
-    when "pending"
+    when "waiting"
       attempts += 1
     end
 
-    exit_with_error "Checks are still pending, gave up after #{MAX_ATTEMPTS * ATTEMPTS_GAP} seconds" if attempts == MAX_ATTEMPTS
+    exit_with_error "Checks are still waiting, gave up after #{MAX_ATTEMPTS * ATTEMPTS_GAP} seconds" if attempts == MAX_ATTEMPTS
 
     puts checks.current_status
     sleep(ATTEMPTS_GAP)
