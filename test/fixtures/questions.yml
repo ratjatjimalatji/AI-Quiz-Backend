@@ -1,0 +1,6 @@
+template_question:
+  title: "What is 2 + 2?"
+  question_type: 0
+  round: template_round
+  position: 1
+  correct_answer_ids: <%= [ActiveRecord::FixtureSet.identify(:template_option_correct)].to_json %>

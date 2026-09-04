@@ -1,0 +1,9 @@
+template_option_correct:
+  text: "4"
+  position: 1
+  question: template_question
+
+template_option_wrong:
+  text: "5"
+  position: 2
+  question: template_question

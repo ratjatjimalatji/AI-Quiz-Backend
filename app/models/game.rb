@@ -18,7 +18,7 @@ class Game < ApplicationRecord
     in_progress: "in_progress",
     completed: "completed"
   }, default: :pending
-# app/models/game.rb
+
 def advance_step!
   with_lock do
     return false if completed?
