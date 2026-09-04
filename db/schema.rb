@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_27_094717) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_04_111600) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "game_code"
@@ -44,6 +47,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_094717) do
     t.boolean "eliminated", default: false
     t.integer "game_id"
     t.integer "score", default: 0
+    t.string "token"
     t.datetime "updated_at", null: false
     t.string "username"
     t.index ["game_id"], name: "index_players_on_game_id"
@@ -69,9 +73,39 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_094717) do
     t.index ["game_id"], name: "index_rounds_on_game_id"
   end
 
+  create_table "solid_cable_messages", force: :cascade do |t|
+    t.binary "channel", null: false
+    t.bigint "channel_hash", null: false
+    t.datetime "created_at", null: false
+    t.binary "payload", null: false
+    t.index ["channel"], name: "index_solid_cable_messages_on_channel"
+    t.index ["channel_hash"], name: "index_solid_cable_messages_on_channel_hash"
+    t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
+  end
+
+  create_table "submissions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "option_id", null: false
+    t.bigint "player_id", null: false
+    t.integer "points_awarded", null: false
+    t.bigint "question_id", null: false
+    t.integer "response_time_ms", null: false
+    t.bigint "round_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["option_id"], name: "index_submissions_on_option_id"
+    t.index ["player_id", "question_id", "round_id"], name: "index_submissions_on_player_id_and_question_id_and_round_id", unique: true
+    t.index ["player_id"], name: "index_submissions_on_player_id"
+    t.index ["question_id"], name: "index_submissions_on_question_id"
+    t.index ["round_id"], name: "index_submissions_on_round_id"
+  end
+
   add_foreign_key "games", "hosts"
   add_foreign_key "options", "questions"
   add_foreign_key "players", "games"
   add_foreign_key "questions", "rounds"
   add_foreign_key "rounds", "games"
+  add_foreign_key "submissions", "options"
+  add_foreign_key "submissions", "players"
+  add_foreign_key "submissions", "questions"
+  add_foreign_key "submissions", "rounds"
 end
