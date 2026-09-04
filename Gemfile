@@ -50,6 +50,8 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem "bcrypt", "~> 3.1.7"
+
+  gem "rack-cors"
 end
 
 gem "pg", "~> 1.6"
