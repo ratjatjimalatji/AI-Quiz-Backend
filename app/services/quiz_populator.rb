@@ -1,39 +1,47 @@
 class QuizPopulator
-      QUIZ_DATA = YAML.load_file(Rails.root.join("db", "seeds", "quiz_data.yml")).freeze
+  def self.call(game)
+    # 1. Fetch template rounds with questions and options eagerly loaded (no N+1 queries)
+    rounds_from_quiz_data = Round.where(game_id: nil)
+                           .includes(questions: :options)
+                           .order(:position, :id)
 
-      def self.call(game)
-        ActiveRecord::Base.transaction do
-          QUIZ_DATA["rounds"].each do |round_raw|
-            # 1. Creates the round with the game"s newly generated ID
-            round = game.rounds.create!(
-              title: round_raw["title"]
-            )
+    raise ActiveRecord::RecordNotFound, "No seed template rounds found. Run rails db:seed." if rounds_from_quiz_data.empty?
 
-            round_raw["questions"].each do |q_raw|
-              # 2. Creates the question under this round
-              question = round.questions.create!(
-                title: q_raw["title"],
-                question_type: q_raw["question_type"]
-              )
+    ActiveRecord::Base.transaction do
+      rounds_from_quiz_data.each do |tpl_round|
+        # 2. Clone round and link to this specific game
+        new_round_in_database = tpl_round.dup
+        new_round_in_database.game = game
+        new_round_in_database.save!
 
-              # 3. Creates options and maps old YAML IDs to new DB IDs
-              yaml_to_db_option_id = {}
-              q_raw["options"].each do |opt_raw|
-                option = question.options.create!(
-                  text: opt_raw["text"],
-                  position: opt_raw["position"]
-                )
-                yaml_to_db_option_id[opt_raw["id"]] = option.id
-              end
+        tpl_round.questions.each do |tpl_question|
+          # 3. Clone question under the new round
+          new_question_in_database = tpl_question.dup
+          new_question_in_database.round = new_round_in_database
+          new_question_in_database.correct_answer_ids = [] # Temporarily reset until options are cloned
+          new_question_in_database.save!
 
-              # 4. Updates correct_answer_ids with the new option IDs
-              mapped_correct_ids = (q_raw["correct_answer_ids"] || []).map do |yaml_opt_id|
-                yaml_to_db_option_id[yaml_opt_id]
-              end.compact
+          old_to_new_option_ids = {}
 
-              question.update!(correct_answer_ids: mapped_correct_ids)
-            end
+          # 4. Clone each option under the new question
+          tpl_question.options.each do |tpl_option|
+            new_option_in_database = tpl_option.dup
+            new_option_in_database.question = new_question_in_database
+            new_option_in_database.save!
+
+            old_to_new_option_ids[tpl_option.id] = new_option_in_database.id
           end
+
+          # 5. Map the original correct_answer_ids to the newly cloned option IDs
+          new_correct_ids = (tpl_question.correct_answer_ids || []).map do |old_id|
+            old_to_new_option_ids[old_id]
+          end.compact
+
+          new_question_in_database.update_columns(correct_answer_ids: new_correct_ids)
         end
       end
+    end
+
+    game.rounds.reload
+  end
 end
