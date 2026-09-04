@@ -5,11 +5,10 @@ class PlayersControllerTest < ActionDispatch::IntegrationTest
     get players_url
     assert_response :success
   end
-
   test "should create player" do
     game = games(:one)
 
-    post create_player_game_url(game.id), params: {
+    post create_player_games_url, params: {
       player: {
         username: "Test Player"
       },

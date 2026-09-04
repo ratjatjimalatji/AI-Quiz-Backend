@@ -12,7 +12,6 @@ ActiveRecord::Base.transaction do
 
   quiz_data['rounds'].each do |round_raw|
     round = Round.find_or_initialize_by(title: round_raw['title'])
-    round.round_type = round_raw['round_type']
     round.save!
     processed_round_ids << round.id
 
