@@ -21,6 +21,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_112857) do
     t.string "game_code"
     t.integer "host_id", null: false
     t.integer "player_limit", default: 8, null: false
+    t.datetime "question_started_at"
     t.string "status", default: "waiting"
     t.datetime "updated_at", null: false
     t.index ["current_question_id"], name: "index_games_on_current_question_id"
