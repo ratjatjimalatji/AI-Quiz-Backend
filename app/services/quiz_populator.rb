@@ -1,5 +1,5 @@
 class QuizPopulator
-  DEFAULT_PATH = Rails.root.join("db", "seeds", "quiz_data.yml")
+  DEFAULT_PATH = Rails.root.join("db/seeds/quiz_data.yml")
 
   def self.call(game, path: DEFAULT_PATH)
     new(game, path).call
