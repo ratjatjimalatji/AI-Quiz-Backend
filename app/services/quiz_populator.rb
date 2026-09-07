@@ -14,13 +14,13 @@ class QuizPopulator
     Game.transaction do
       @data.fetch("rounds").each_with_index do |round_data, r_idx|
         round = @game.rounds.create!(
-          name: round_data["name"],
+          title: round_data["title"],
           position: round_data["position"] || r_idx + 1
         )
 
         round_data.fetch("questions").each_with_index do |q_data, q_idx|
           question = round.questions.create!(
-            text: q_data["text"],
+            title: q_data["title"],
             question_type: q_data["question_type"],
             position: q_data["position"] || q_idx + 1
           )
