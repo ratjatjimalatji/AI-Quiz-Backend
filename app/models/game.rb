@@ -36,17 +36,6 @@ def advance_step!
     end
 
     # 2. Find next question in current round
-    curr_q_pos = current_question.position || 0
-    curr_q_id  = current_question.id
-
-    next_question = current_round.questions
-      .where(
-        "COALESCE(position, 0) > ? OR (COALESCE(position, 0) = ? AND id > ?)",
-        curr_q_pos, curr_q_pos, curr_q_id
-      )
-      .order(Arel.sql("COALESCE(position, 0) ASC"), :id)
-      .first
-    # 2. Find next question in current round
     current_question_position = current_question.position || 0
     current_question_id  = current_question.id
 
