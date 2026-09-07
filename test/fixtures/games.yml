@@ -11,3 +11,9 @@ two:
   status: "waiting"
   player_limit: 10
   host: two
+
+empty:
+  game_code: "EMPTY1"
+  status: "waiting"
+  player_limit: 8
+  host: one
