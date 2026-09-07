@@ -96,6 +96,8 @@ end
   private
 
   def transition_to!(round:, question:, status: self.status)
+    now = Time.current
+    question.update!(shown_at: now) if question.present? && question.shown_at.nil?
     update!(
       status: status,
       current_round: round,
