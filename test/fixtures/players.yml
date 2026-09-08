@@ -4,8 +4,10 @@ one:
   username: MyString
   score: 1
   eliminated: false
+  game: one
 
 two:
   username: MyString
   score: 1
   eliminated: false
+  game: one

@@ -17,7 +17,11 @@ Rails.application.configure do
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
-
+  config.action_cable.mount_path = "/cable"
+  config.action_cable.allowed_request_origins = [
+  "https://ai-quiz-frontend-delta.vercel.app/",
+  "http://localhost:3000"
+]
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 

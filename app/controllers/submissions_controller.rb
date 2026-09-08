@@ -5,19 +5,24 @@ class SubmissionsController < ApplicationController
     question = Question.find(submission_params[:question_id])
     option = question.options.find(submission_params[:option_id])
 
-    correct = question.correct_answer_ids.include?(option.id)
+    game = current_player.game
+
+    response_time_ms =
+      ((Time.current - game.current_question_started_at) * 1000).to_i
+
+    correct = question.correct_answer_ids.include?(option.position)
 
     points_awarded = ScoreUpdater.call(
       player: current_player,
       correct: correct,
-      response_time_ms: submission_params[:response_time_ms].to_i
+      response_time_ms: response_time_ms
     )
 
     submission = current_player.submissions.create!(
       question: question,
       round: question.round,
       option: option,
-      response_time_ms: submission_params[:response_time_ms],
+      response_time_ms: response_time_ms,
       points_awarded: points_awarded
     )
 
@@ -29,8 +34,7 @@ class SubmissionsController < ApplicationController
   def submission_params
     params.require(:submission).permit(
       :question_id,
-      :option_id,
-      :response_time_ms
+      :option_id
     )
   end
 end

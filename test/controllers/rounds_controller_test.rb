@@ -2,7 +2,7 @@ require "test_helper"
 
 class RoundsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
-    get rounds_index_url
+    get rounds_url
     assert_response :success
   end
  test "should create round" do

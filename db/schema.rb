@@ -16,11 +16,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_111600) do
 
   create_table "games", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "current_question_id"
+    t.bigint "current_round_id"
     t.string "game_code"
     t.integer "host_id", null: false
     t.integer "player_limit", default: 8, null: false
-    t.string "status", default: "waiting"
+    t.datetime "question_started_at"
+    t.string "status", default: "pending"
     t.datetime "updated_at", null: false
+    t.index ["current_question_id"], name: "index_games_on_current_question_id"
+    t.index ["current_round_id"], name: "index_games_on_current_round_id"
     t.index ["host_id"], name: "index_games_on_host_id"
   end
 
@@ -68,8 +73,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_111600) do
   create_table "rounds", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "game_id"
+    t.integer "position", default: 0
     t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.index ["game_id", "position"], name: "index_rounds_on_game_id_and_position"
     t.index ["game_id"], name: "index_rounds_on_game_id"
   end
 
@@ -100,6 +107,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_111600) do
   end
 
   add_foreign_key "games", "hosts"
+  add_foreign_key "games", "questions", column: "current_question_id"
+  add_foreign_key "games", "rounds", column: "current_round_id"
   add_foreign_key "options", "questions"
   add_foreign_key "players", "games"
   add_foreign_key "questions", "rounds"
