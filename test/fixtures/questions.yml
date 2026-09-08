@@ -4,3 +4,27 @@ template_question:
   round: template_round
   position: 1
   correct_answer_ids: <%= [ActiveRecord::FixtureSet.identify(:template_option_correct)].to_json %>
+
+one:
+  round: one
+  title: "Anthropic was founded before OpenAI."
+  question_type: "true_false"
+  correct_answer_ids: [1]
+
+two:
+  round: one
+  title: "What is the capital of France?"
+  question_type: "multiple_choice"
+  correct_answer_ids: [2]
+
+three:
+  round: one
+  title: "Ruby on Rails is written in Ruby."
+  question_type: "true_false"
+  correct_answer_ids: [1]
+
+four:
+  round: one
+  title: "Which planet is known as the Red Planet?"
+  question_type: "multiple_choice"
+  correct_answer_ids: [3]

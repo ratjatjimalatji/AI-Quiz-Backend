@@ -14,17 +14,17 @@ class Game < ApplicationRecord
   after_create :populate_quiz_data
 
   enum :status, {
-    pending: "pending",
+    waiting: "waiting",
     in_progress: "in_progress",
     completed: "completed"
-  }, default: :pending
+  }, default: :waiting
 
 def advance_step!
   with_lock do
     return false if completed?
 
-    # 1. Start game if pending or current_round not set
-    if pending? || current_round.nil?
+    # 1. Start game if waiting or current_round not set
+    if waiting? || current_round.nil?
       first_round = rounds.order(Arel.sql("COALESCE(position, 0) ASC"), :id).first
       return false unless first_round
 
@@ -35,17 +35,6 @@ def advance_step!
       return true
     end
 
-    # 2. Find next question in current round
-    curr_q_pos = current_question.position || 0
-    curr_q_id  = current_question.id
-
-    next_question = current_round.questions
-      .where(
-        "COALESCE(position, 0) > ? OR (COALESCE(position, 0) = ? AND id > ?)",
-        curr_q_pos, curr_q_pos, curr_q_id
-      )
-      .order(Arel.sql("COALESCE(position, 0) ASC"), :id)
-      .first
     # 2. Find next question in current round
     current_question_position = current_question.position || 0
     current_question_id  = current_question.id
@@ -107,6 +96,8 @@ end
   private
 
   def transition_to!(round:, question:, status: self.status)
+    now = Time.current
+    question.update!(shown_at: now) if question.present? && question.shown_at.nil?
     update!(
       status: status,
       current_round: round,

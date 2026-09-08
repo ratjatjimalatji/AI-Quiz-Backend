@@ -1,8 +1,9 @@
 #!/bin/bash -e
 
 # If running the rails server then create or migrate existing database
-if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  ./bin/rails db:prepare
-fi
+set -e
+
+bundle exec rails db:migrate
+bundle exec rails db:seed
 
 exec "${@}"
