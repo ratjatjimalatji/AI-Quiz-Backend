@@ -121,4 +121,48 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_in_delta 7_000, submission.response_time_ms, 100
     assert_equal 98, submission.points_awarded
   end
+
+  test "returns correctness and points awarded for a correct answer" do
+  @game.update!(
+    current_question_id: @question.id,
+    question_started_at: 4.seconds.ago
+  )
+
+  post submissions_path,
+    params: {
+      submission: {
+        question_id: @question.id,
+        option_id: @correct_option.id
+      }
+    }
+
+  assert_response :created
+
+  response_body = JSON.parse(response.body)
+
+  assert_equal true, response_body["correct"]
+  assert_equal 100, response_body["points_awarded"]
+  end
+
+  test "returns correctness and zero points for an incorrect answer" do
+  @game.update!(
+    current_question_id: @question.id,
+    question_started_at: 4.seconds.ago
+  )
+
+  post submissions_path,
+    params: {
+      submission: {
+        question_id: @question.id,
+        option_id: @incorrect_option.id
+      }
+    }
+
+  assert_response :created
+
+  response_body = JSON.parse(response.body)
+
+  assert_equal false, response_body["correct"]
+  assert_equal 0, response_body["points_awarded"]
+  end
 end

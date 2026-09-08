@@ -26,7 +26,11 @@ class SubmissionsController < ApplicationController
       points_awarded: points_awarded
     )
 
-    render json: submission, status: :created
+    render json: {
+      submission: submission,
+      correct: correct,
+      points_awarded: points_awarded
+    }, status: :created
   end
 
   private
