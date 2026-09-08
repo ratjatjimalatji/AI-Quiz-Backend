@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_04_111600) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_07_124228) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -22,7 +22,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_111600) do
     t.integer "host_id", null: false
     t.integer "player_limit", default: 8, null: false
     t.datetime "question_started_at"
-    t.string "status", default: "pending"
+    t.string "status", default: "waiting"
     t.datetime "updated_at", null: false
     t.index ["current_question_id"], name: "index_games_on_current_question_id"
     t.index ["current_round_id"], name: "index_games_on_current_round_id"
@@ -65,6 +65,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_111600) do
     t.integer "position"
     t.integer "question_type", default: 0, null: false
     t.integer "round_id"
+    t.datetime "shown_at"
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["round_id"], name: "index_questions_on_round_id"
