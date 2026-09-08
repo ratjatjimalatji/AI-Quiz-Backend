@@ -7,3 +7,13 @@ template_option_wrong:
   text: "5"
   position: 2
   question: template_question
+
+one_correct:
+  text: "True"
+  position: 1
+  question: one
+
+one_incorrect:
+  text: "False"
+  position: 2
+  question: one

@@ -1,5 +1,5 @@
 class SubmissionsController < ApplicationController
-  # before_action :authenticate_player!
+  before_action :authenticate_player!, only: [ :create ]
 
   def create
     question = Question.find(submission_params[:question_id])
@@ -8,7 +8,7 @@ class SubmissionsController < ApplicationController
     game = current_player.game
 
     response_time_ms =
-      ((Time.current - game.current_question_started_at) * 1000).to_i
+      ((Time.current - game.question_started_at) * 1000).to_i
 
     correct = question.correct_answer_ids.include?(option.position)
 
