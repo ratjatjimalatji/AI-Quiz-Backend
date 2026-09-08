@@ -20,4 +20,5 @@ Rails.application.routes.draw do
   resources :hosts, only: [ :index, :create ] do
     post :create_game, on: :member
   end
+  resources :submissions, only: [ :create ]
 end
