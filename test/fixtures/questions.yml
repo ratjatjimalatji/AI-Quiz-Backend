@@ -28,3 +28,15 @@ four:
   title: "Which planet is known as the Red Planet?"
   question_type: "multiple_choice"
   correct_answer_ids: [3]
+
+sequence_question:
+  round: one
+  title: "Put these steps in the correct order."
+  question_type: "drag_drop_order"
+  correct_answer_ids: [1, 2, 3]
+
+fill_in_the_blank_question:
+  round: one
+  title: "What language is Ruby on Rails written in?"
+  question_type: "fill_in_the_blank"
+  correct_answer_ids: <%= [ActiveRecord::FixtureSet.identify(:fill_blank_option)].to_json %>
