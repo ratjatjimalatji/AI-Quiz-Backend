@@ -6,7 +6,7 @@ rounds:
         title: "Which generative AI LLM chatbot is the most widely used among consumers in South Africa?"
         question_type: "single_choice"
         correct_answer_ids: [1005]
-        options: 
+        options:
           - id: 1005
             question_id: 103
             text: "ChatGPT"
@@ -63,8 +63,12 @@ rounds:
       - id: 106
         title: "What is the name of Anthropic's AI called?"
         question_type: "type_the_answer"
-        answer: "Claude"
-        placeholder: "Type your answer..."
+        correct_answer_ids: [1017]
+        options:
+          - id: 1017
+            question_id: 106
+            text: "Claude"
+            position: 1
 
       - id: 104
         title: "Which major tech company powers its generative search and flagship AI assistants using the Gemini model family?"
@@ -105,8 +109,13 @@ rounds:
       - id: 107
         title: "What is Meta's primary family models named?"
         question_type: "type_the_answer"
-        answer: "Llama"
+        correct_answer_ids: [1018]
         placeholder: "Type your answer..."
+        options:
+          - id: 1018
+            question_id: 107
+            text: "Llama"
+            position: 1
 
       - id: 110
         title: "Order these prominent OpenAI flagship models by their public release date (Oldest to Newest)."
@@ -155,8 +164,13 @@ rounds:
       - id: 108
         title: "What is the name of the personal artificial intelligence system built into Apple devices like the iPhone, iPad, and Mac?"
         question_type: "type_the_answer"
-        answer: "Apple Intelligence"
+        correct_answer_ids: [1019]
         placeholder: "Type your answer..."
+        options:
+          - id: 1019
+            question_id: 108
+            text: "Apple Intelligence"
+            position: 1
 
   - id: 2
     title: "Round 2: Advanced LLM Architectures & Ecosystems"
@@ -222,8 +236,13 @@ rounds:
       - id: 206
         title: "What natural resource do AI data centers consume to prevent overheating and maintain optimal temperatures"
         question_type: "type_the_answer"
-        answer: "Water"
+        correct_answer_ids: [2017]
         placeholder: "Type your answer..."
+        options:
+          - id: 2017
+            question_id: 206
+            text: "Water"
+            position: 1
 
       - id: 203
         title: "Which billionaire entrepreneur founded xAI in 2023 to develop the Grok AI models?"
@@ -264,8 +283,13 @@ rounds:
       - id: 208
         title: "In which country did DeepSeek originate in?"
         question_type: "type_the_answer"
-        answer: "China"
+        correct_answer_ids: [2018]
         placeholder: "Type your answer..."
+        options:
+          - id: 2018
+            question_id: 208
+            text: "China"
+            position: 1
 
       - id: 210
         title: "Order these major AI startups chronologically by their founding date (Earliest to Most Recent)."
@@ -314,8 +338,13 @@ rounds:
       - id: 207
         title: "In what city is OpenAI's headquarters located?"
         question_type: "type_the_answer"
-        answer: "San Francisco"
+        correct_answer_ids: [2019]
         placeholder: "Type the answer..."
+        options:
+          - id: 2019
+            question_id: 207
+            text: "San Francisco"
+            position: 1
 
   - id: 3
     title: "Round 3: Core AI Concepts & Learning Paradigms"

@@ -7,7 +7,8 @@ class Question < ApplicationRecord
     true_false:      0,
     single_choice:   1,
     multiple_choice: 2,
-    drag_drop_order: 3
+    drag_drop_order: 3,
+    type_the_answer: 4,
   }
 
   def as_json(options = {})
