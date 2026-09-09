@@ -62,7 +62,7 @@ rounds:
 
       - id: 106
         title: "What is the name of Anthropic's AI called?"
-        question_type: "fill_in_the_blank"
+        question_type: "type_the_answer"
         answer: "Claude"
         placeholder: "Type your answer..."
 
@@ -104,7 +104,7 @@ rounds:
 
       - id: 107
         title: "What is Meta's primary family models named?"
-        question_type: "fill_in_the_blank"
+        question_type: "type_the_answer"
         answer: "Llama"
         placeholder: "Type your answer..."
 
@@ -154,7 +154,7 @@ rounds:
 
       - id: 108
         title: "What is the name of the personal artificial intelligence system built into Apple devices like the iPhone, iPad, and Mac?"
-        question_type: "fill_in_the_blank"
+        question_type: "type_the_answer"
         answer: "Apple Intelligence"
         placeholder: "Type your answer..."
 
@@ -221,7 +221,7 @@ rounds:
 
       - id: 206
         title: "What natural resource do AI data centers consume to prevent overheating and maintain optimal temperatures"
-        question_type: "fill_in_the_blank"
+        question_type: "type_the_answer"
         answer: "Water"
         placeholder: "Type your answer..."
 
@@ -263,7 +263,7 @@ rounds:
 
       - id: 208
         title: "In which country did DeepSeek originate in?"
-        question_type: "fill_in_the_blank"
+        question_type: "type_the_answer"
         answer: "China"
         placeholder: "Type your answer..."
 
@@ -313,7 +313,7 @@ rounds:
 
       - id: 207
         title: "In what city is OpenAI's headquarters located?"
-        question_type: "fill_in_the_blank"
+        question_type: "type_the_answer"
         answer: "San Francisco"
         placeholder: "Type the answer..."
 
