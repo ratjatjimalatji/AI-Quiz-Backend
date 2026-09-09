@@ -248,17 +248,17 @@ rounds:
             position: 4
 
       - id: 202
-        title: "What does the 'GPT' in ChatGPT stand for?"
+        title: "The 'GPT' in ChatGPT stands for 'Generative Pre-trained Transformer'."
         question_type: "true_false"
         correct_answer_ids: [2003]
         options:
           - id: 2003
             question_id: 202
-            text: "Generative Pre-trained Transformer"
+            text: "True"
             position: 1
           - id: 2004
             question_id: 202
-            text: "Generative Post-trained Transformer"
+            text: "False"
             position: 2
 
       - id: 208
