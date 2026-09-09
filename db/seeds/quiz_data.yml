@@ -20,12 +20,17 @@ rounds:
 
       - id: 102
         title: "Anthropic was founded before OpenAI."
-        question_type: "fill_in_the_blank" 
+        question_type: "true_false"
+        correct_answer_ids: [1004]
         options:
           - id: 1003
             question_id: 102
-            text: "OpenAI"                 
+            text: "True"
             position: 1
+          - id: 1004
+            question_id: 102
+            text: "False"
+            position: 2
 
       # Single Choice (3 Questions)
       - id: 103
