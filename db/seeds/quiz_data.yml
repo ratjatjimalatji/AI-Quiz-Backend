@@ -3,21 +3,21 @@ rounds:
     title: "Round 1: AI Foundations & Industry Titans"
     questions:
       - id: 103
-        title: "Which generative AI LLM chatbot consistently ranks as the most widely used among consumers and tech professionals in South Africa?"
+        title: "Which generative AI LLM chatbot is the most widely used among consumers in South Africa?"
         question_type: "single_choice"
         correct_answer_ids: [1005]
-        options:
+        options: 
           - id: 1005
             question_id: 103
-            text: "ChatGPT (OpenAI)"
+            text: "ChatGPT"
             position: 1
           - id: 1006
             question_id: 103
-            text: "Claude (Anthropic)"
+            text: "Claude"
             position: 2
           - id: 1007
             question_id: 103
-            text: "Grok (xAI)"
+            text: "Grok"
             position: 3
           - id: 1008
             question_id: 103
@@ -39,32 +39,32 @@ rounds:
             position: 2
 
       - id: 109
-        title: "Order these AI pioneer companies chronologically by their founding year (Earliest to Most Recent)."
+        title: "Order these companies by their founding year (Earliest to Most Recent)."
         question_type: "drag_drop_order"
         correct_answer_ids: [1029, 1030, 1031, 1032]
         options:
           - id: 1029
             question_id: 109
-            text: "NVIDIA (1993)"
+            text: "NVIDIA"
             position: 1
           - id: 1030
             question_id: 109
-            text: "DeepMind (2010)"
+            text: "DeepMind"
             position: 2
           - id: 1031
             question_id: 109
-            text: "OpenAI (2015)"
+            text: "OpenAI"
             position: 3
           - id: 1032
             question_id: 109
-            text: "xAI (2023)"
+            text: "xAI"
             position: 4
 
       - id: 106
         title: "What is the name of Anthropic's AI called?"
         question_type: "fill_in_the_blank"
         answer: "Claude"
-        placeholder: "Type your answer here..."
+        placeholder: "Type your answer..."
 
       - id: 104
         title: "Which major tech company powers its generative search and flagship AI assistants using the Gemini model family?"
@@ -106,7 +106,7 @@ rounds:
         title: "What is Meta's primary family models named?"
         question_type: "fill_in_the_blank"
         answer: "Llama"
-        placeholder: "Type model family name..."
+        placeholder: "Type your answer..."
 
       - id: 110
         title: "Order these prominent OpenAI flagship models by their public release date (Oldest to Newest)."
@@ -220,10 +220,10 @@ rounds:
             position: 4
 
       - id: 206
-        title: "What naturalresource do AI data centers consume to prevent overheating and maintain optimal temperatures"
+        title: "What natural resource do AI data centers consume to prevent overheating and maintain optimal temperatures"
         question_type: "fill_in_the_blank"
         answer: "Water"
-        placeholder: "Type answer..."
+        placeholder: "Type your answer..."
 
       - id: 203
         title: "Which billionaire entrepreneur founded xAI in 2023 to develop the Grok AI models?"
