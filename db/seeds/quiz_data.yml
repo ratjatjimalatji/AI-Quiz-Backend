@@ -453,13 +453,13 @@ rounds:
       - id: 307
         title: "Overfitting occurs when a machine learning model performs exceptionally well on its training data but poorly on unseen test data."
         question_type: "true_false"
-        correct_answer_ids: [3016_tf]
+        correct_answer_ids: [3026]
         options:
-          - id: 3016_tf
+          - id: 3026
             question_id: 307
             text: "True"
             position: 1
-          - id: 3017_tf
+          - id: 3027
             question_id: 307
             text: "False"
             position: 2
