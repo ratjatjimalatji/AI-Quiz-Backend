@@ -1,38 +1,7 @@
 rounds:
   - id: 1
     title: "Round 1: AI Foundations & Industry Titans"
-    round_type: "qualifier"
     questions:
-      # True / False (2 Questions)
-      - id: 101
-        title: "Apple partnered with OpenAI to integrate ChatGPT directly into Apple Intelligence for handling complex Siri queries."
-        question_type: "true_false"
-        correct_answer_ids: [1001]
-        options:
-          - id: 1001
-            question_id: 101
-            text: "True"
-            position: 1
-          - id: 1002
-            question_id: 101
-            text: "False"
-            position: 2
-
-      - id: 102
-        title: "Anthropic was founded before OpenAI."
-        question_type: "true_false"
-        correct_answer_ids: [1004]
-        options:
-          - id: 1003
-            question_id: 102
-            text: "True"
-            position: 1
-          - id: 1004
-            question_id: 102
-            text: "False"
-            position: 2
-
-      # Single Choice (3 Questions)
       - id: 103
         title: "Which generative AI LLM chatbot consistently ranks as the most widely used among consumers and tech professionals in South Africa?"
         question_type: "single_choice"
@@ -55,6 +24,48 @@ rounds:
             text: "DeepSeek"
             position: 4
 
+      - id: 101
+        title: "Apple partnered with OpenAI to integrate ChatGPT directly into Apple Intelligence for handling complex Siri queries."
+        question_type: "true_false"
+        correct_answer_ids: [1001]
+        options:
+          - id: 1001
+            question_id: 101
+            text: "True"
+            position: 1
+          - id: 1002
+            question_id: 101
+            text: "False"
+            position: 2
+
+      - id: 109
+        title: "Order these AI pioneer companies chronologically by their founding year (Earliest to Most Recent)."
+        question_type: "drag_drop_order"
+        correct_answer_ids: [1029, 1030, 1031, 1032]
+        options:
+          - id: 1029
+            question_id: 109
+            text: "NVIDIA (1993)"
+            position: 1
+          - id: 1030
+            question_id: 109
+            text: "DeepMind (2010)"
+            position: 2
+          - id: 1031
+            question_id: 109
+            text: "OpenAI (2015)"
+            position: 3
+          - id: 1032
+            question_id: 109
+            text: "xAI (2023)"
+            position: 4
+
+      - id: 106
+        title: "What is the name of Anthropic's AI called?"
+        question_type: "fill_in_the_blank"
+        answer: "Claude"
+        placeholder: "Type your answer here..."
+
       - id: 104
         title: "Which major tech company powers its generative search and flagship AI assistants using the Gemini model family?"
         question_type: "single_choice"
@@ -75,6 +86,48 @@ rounds:
           - id: 1012
             question_id: 104
             text: "Amazon"
+            position: 4
+
+      - id: 102
+        title: "Anthropic was founded before OpenAI."
+        question_type: "true_false"
+        correct_answer_ids: [1004]
+        options:
+          - id: 1003
+            question_id: 102
+            text: "True"
+            position: 1
+          - id: 1004
+            question_id: 102
+            text: "False"
+            position: 2
+
+      - id: 107
+        title: "What is Meta's primary family models named?"
+        question_type: "fill_in_the_blank"
+        answer: "Llama"
+        placeholder: "Type model family name..."
+
+      - id: 110
+        title: "Order these prominent OpenAI flagship models by their public release date (Oldest to Newest)."
+        question_type: "drag_drop_order"
+        correct_answer_ids: [1033, 1034, 1035, 1036]
+        options:
+          - id: 1033
+            question_id: 110
+            text: "GPT-3"
+            position: 1
+          - id: 1034
+            question_id: 110
+            text: "ChatGPT (GPT-3.5)"
+            position: 2
+          - id: 1035
+            question_id: 110
+            text: "GPT-4"
+            position: 3
+          - id: 1036
+            question_id: 110
+            text: "o1 Reasoning Model"
             position: 4
 
       - id: 105
@@ -99,123 +152,37 @@ rounds:
             text: "Qualcomm"
             position: 4
 
-      # Multiple Choice (3 Questions)
-      - id: 106
-        title: "Which of the following AI model families are developed and released by Anthropic?"
-        question_type: "multiple_choice"
-        correct_answer_ids: [1017, 1018, 1020]
-        options:
-          - id: 1017
-            question_id: 106
-            text: "Opus"
-            position: 1
-          - id: 1018
-            question_id: 106
-            text: "Sonnet"
-            position: 2
-          - id: 1019
-            question_id: 106
-            text: "Llama 3"
-            position: 3
-          - id: 1020
-            question_id: 106
-            text: "Haiku"
-            position: 4
-
-      - id: 107
-        title: "Which of the following are open-weights or open-source frontier model families?"
-        question_type: "multiple_choice"
-        correct_answer_ids: [1021, 1022, 1024]
-        options:
-          - id: 1021
-            question_id: 107
-            text: "Meta Llama"
-            position: 1
-          - id: 1022
-            question_id: 107
-            text: "Mistral AI models"
-            position: 2
-          - id: 1023
-            question_id: 107
-            text: "OpenAI GPT-4o (weights only)"
-            position: 3
-          - id: 1024
-            question_id: 107
-            text: "DeepSeek-V3 / R1"
-            position: 4
-
       - id: 108
-        title: "Which major features were announced as native components of Apple Intelligence across iOS and macOS?"
-        question_type: "multiple_choice"
-        correct_answer_ids: [1025, 1026, 1027]
-        options:
-          - id: 1025
-            question_id: 108
-            text: "System-wide Writing Tools"
-            position: 1
-          - id: 1026
-            question_id: 108
-            text: "Clean Up in Photos"
-            position: 2
-          - id: 1027
-            question_id: 108
-            text: "Image Playground & Genmoji"
-            position: 3
-          - id: 1028
-            question_id: 108
-            text: "CUDA Kernel Compilation"
-            position: 4
-
-      # Drag & Drop Order (2 Questions)
-      - id: 109
-        title: "Order these AI pioneer companies chronologically by their founding year (Earliest to Most Recent)."
-        question_type: "drag_drop_order"
-        correct_answer_ids: [1029, 1030, 1031, 1032]
-        options:
-          - id: 1029
-            question_id: 109
-            text: "NVIDIA (1993)"
-            position: 1
-          - id: 1030
-            question_id: 109
-            text: "DeepMind (2010)"
-            position: 2
-          - id: 1031
-            question_id: 109
-            text: "OpenAI (2015)"
-            position: 3
-          - id: 1032
-            question_id: 109
-            text: "xAI (2023)"
-            position: 4
-
-      - id: 110
-        title: "Order these prominent OpenAI flagship models by their public release date (Oldest to Newest)."
-        question_type: "drag_drop_order"
-        correct_answer_ids: [1033, 1034, 1035, 1036]
-        options:
-          - id: 1033
-            question_id: 110
-            text: "GPT-3"
-            position: 1
-          - id: 1034
-            question_id: 110
-            text: "ChatGPT (GPT-3.5)"
-            position: 2
-          - id: 1035
-            question_id: 110
-            text: "GPT-4"
-            position: 3
-          - id: 1036
-            question_id: 110
-            text: "o1 Reasoning Model"
-            position: 4
+        title: "What is the name of the personal artificial intelligence system built into Apple devices like the iPhone, iPad, and Mac?"
+        question_type: "fill_in_the_blank"
+        answer: "Apple Intelligence"
+        placeholder: "Type your answer..."
 
   - id: 2
     title: "Round 2: Advanced LLM Architectures & Ecosystems"
-    round_type: "qualifier"
     questions:
-      # True / False (2 Questions)
+      - id: 204
+        title: "What is the primary architectural innovation introduced by DeepSeek-V2 and V3 to reduce memory consumption during attention computation?"
+        question_type: "single_choice"
+        correct_answer_ids: [2009]
+        options:
+          - id: 2009
+            question_id: 204
+            text: "Multi-head Latent Attention (MLA)"
+            position: 1
+          - id: 2010
+            question_id: 204
+            text: "Recurrent State Space Layering"
+            position: 2
+          - id: 2011
+            question_id: 204
+            text: "FlashDropout"
+            position: 3
+          - id: 2012
+            question_id: 204
+            text: "Binary Quantization Tree"
+            position: 4
+
       - id: 201
         title: "The groundbreaking 'Attention Is All You Need' paper that introduced the Transformer architecture was published by researchers at Google Brain & Google Research."
         question_type: "true_false"
@@ -230,21 +197,34 @@ rounds:
             text: "False"
             position: 2
 
-      - id: 202
-        title: "What does the 'GPT' in ChatGPT stand for?"
-        question_type: "true_false"
-        correct_answer_ids: [2004]
+      - id: 209
+        title: "Order the standard training pipeline stages of a modern instruct LLM from start to finish."
+        question_type: "drag_drop_order"
+        correct_answer_ids: [2029, 2030, 2031, 2032]
         options:
-          - id: 2003
-            question_id: 202
-            text: "Generative Pre-trained Transformer"
+          - id: 2029
+            question_id: 209
+            text: "Self-supervised Pre-training on massive raw text corpora"
             position: 1
-          - id: 2004
-            question_id: 202
-            text: "Generative Post-trained Transformer"
+          - id: 2030
+            question_id: 209
+            text: "Supervised Fine-Tuning (SFT) on curated instruction-response pairs"
             position: 2
+          - id: 2031
+            question_id: 209
+            text: "Preference Alignment (RLHF / DPO)"
+            position: 3
+          - id: 2032
+            question_id: 209
+            text: "Quantization, Evaluation & Red Teaming for deployment"
+            position: 4
 
-      # Single Choice (3 Questions)
+      - id: 206
+        title: "What naturalresource do AI data centers consume to prevent overheating and maintain optimal temperatures"
+        question_type: "fill_in_the_blank"
+        answer: "Water"
+        placeholder: "Type answer..."
+
       - id: 203
         title: "Which billionaire entrepreneur founded xAI in 2023 to develop the Grok AI models?"
         question_type: "single_choice"
@@ -267,26 +247,46 @@ rounds:
             text: "Demis Hassabis"
             position: 4
 
-      - id: 204
-        title: "What is the primary architectural innovation introduced by DeepSeek-V2 and V3 to reduce memory consumption during attention computation?"
-        question_type: "single_choice"
-        correct_answer_ids: [2009]
+      - id: 202
+        title: "What does the 'GPT' in ChatGPT stand for?"
+        question_type: "true_false"
+        correct_answer_ids: [2003]
         options:
-          - id: 2009
-            question_id: 204
-            text: "Multi-head Latent Attention (MLA)"
+          - id: 2003
+            question_id: 202
+            text: "Generative Pre-trained Transformer"
             position: 1
-          - id: 2010
-            question_id: 204
-            text: "Recurrent State Space Layering"
+          - id: 2004
+            question_id: 202
+            text: "Generative Post-trained Transformer"
             position: 2
-          - id: 2011
-            question_id: 204
-            text: "FlashDropout"
+
+      - id: 208
+        title: "In which country did DeepSeek originate in?"
+        question_type: "fill_in_the_blank"
+        answer: "China"
+        placeholder: "Type your answer..."
+
+      - id: 210
+        title: "Order these major AI startups chronologically by their founding date (Earliest to Most Recent)."
+        question_type: "drag_drop_order"
+        correct_answer_ids: [2033, 2034, 2035, 2036]
+        options:
+          - id: 2033
+            question_id: 210
+            text: "OpenAI"
+            position: 1
+          - id: 2034
+            question_id: 210
+            text: "Anthropic"
+            position: 2
+          - id: 2035
+            question_id: 210
+            text: "Mistral AI"
             position: 3
-          - id: 2012
-            question_id: 204
-            text: "Binary Quantization Tree"
+          - id: 2036
+            question_id: 210
+            text: "DeepSeek"
             position: 4
 
       - id: 205
@@ -311,114 +311,195 @@ rounds:
             text: "IBM Cloud"
             position: 4
 
-      # Multiple Choice (3 Questions)
-      - id: 206
-        title: "Which of the following are techniques used to align LLMs with human values and safety standards during post-training?"
-        question_type: "multiple_choice"
-        correct_answer_ids: [2017, 2018, 2020]
-        options:
-          - id: 2017
-            question_id: 206
-            text: "RLHF (Reinforcement Learning from Human Feedback)"
-            position: 1
-          - id: 2018
-            question_id: 206
-            text: "DPO (Direct Preference Optimization)"
-            position: 2
-          - id: 2019
-            question_id: 206
-            text: "Random Weight Initialization"
-            position: 3
-          - id: 2020
-            question_id: 206
-            text: "Constitutional AI (RLAIF)"
-            position: 4
-
       - id: 207
-        title: "Which consumer AI products have reached over 100 million monthly active users globally?"
-        question_type: "multiple_choice"
-        correct_answer_ids: [2021, 2022, 2023]
+        title: "In what city is OpenAI's headquarters located?"
+        question_type: "fill_in_the_blank"
+        answer: "San Francisco"
+        placeholder: "Type the answer..."
+
+  - id: 3
+    title: "Round 3: Core AI Concepts & Learning Paradigms"
+    questions:
+      - id: 301
+        title: "Which branch of Artificial Intelligence focuses on enabling machines to learn from data without being explicitly programmed?"
+        question_type: "single_choice"
+        correct_answer_ids: [3002]
         options:
-          - id: 2021
-            question_id: 207
-            text: "ChatGPT"
+          - id: 3001
+            question_id: 301
+            text: "Rule-Based Processing"
             position: 1
-          - id: 2022
-            question_id: 207
-            text: "Microsoft Copilot"
+          - id: 3002
+            question_id: 301
+            text: "Machine Learning"
             position: 2
-          - id: 2023
-            question_id: 207
-            text: "Google Gemini"
+          - id: 3003
+            question_id: 301
+            text: "Mechanical Automation"
             position: 3
-          - id: 2024
-            question_id: 207
-            text: "AutoGPT CLI"
+          - id: 3004
+            question_id: 301
+            text: "Static Data Analysis"
             position: 4
 
-      - id: 208
-        title: "Which vector databases are commonly used in production RAG systems to store and retrieve high-dimensional embeddings?"
-        question_type: "multiple_choice"
-        correct_answer_ids: [2025, 2026, 2027]
+      - id: 305
+        title: "Supervised machine learning algorithms require labeled data to learn predictions or classifications."
+        question_type: "true_false"
+        correct_answer_ids: [3005]
         options:
-          - id: 2025
-            question_id: 208
-            text: "Pinecone"
+          - id: 3005
+            question_id: 305
+            text: "True"
             position: 1
-          - id: 2026
-            question_id: 208
-            text: "Qdrant"
+          - id: 3006
+            question_id: 305
+            text: "False"
             position: 2
-          - id: 2027
-            question_id: 208
-            text: "Milvus / Chroma"
-            position: 3
-          - id: 2028
-            question_id: 208
-            text: "Memcached Basic"
-            position: 4
 
-      # Drag & Drop Order (2 Questions)
-      - id: 209
-        title: "Order the standard training pipeline stages of a modern instruct LLM from start to finish."
+      - id: 308
+        title: "Match the AI Discipline terms on the left to match definitions A, B, and C in order:\nA) Learning optimal decisions through trial, error, and dynamic rewards/penalties.\nB) Enabling machines to interpret, process, and understand human speech and written text.\nC) Enabling computers to extract meaningful information from digital images and videos."
         question_type: "drag_drop_order"
-        correct_answer_ids: [2029, 2030, 2031, 2032]
+        correct_answer_ids: [3018, 3017, 3019]
         options:
-          - id: 2029
-            question_id: 209
-            text: "Self-supervised Pre-training on massive raw text corpora"
+          - id: 3017
+            question_id: 308
+            text: "Natural Language Processing (NLP)"
             position: 1
-          - id: 2030
-            question_id: 209
-            text: "Supervised Fine-Tuning (SFT) on curated instruction-response pairs"
+          - id: 3018
+            question_id: 308
+            text: "Reinforcement Learning"
             position: 2
-          - id: 2031
-            question_id: 209
-            text: "Preference Alignment (RLHF / DPO)"
+          - id: 3019
+            question_id: 308
+            text: "Computer Vision"
             position: 3
-          - id: 2032
-            question_id: 209
-            text: "Quantization, Evaluation & Red Teaming for deployment"
+
+      - id: 302
+        title: "What is the main function of the 'Attention Mechanism' in modern AI models like Transformers?"
+        question_type: "single_choice"
+        correct_answer_ids: [3008]
+        options:
+          - id: 3007
+            question_id: 302
+            text: "To decrease the hardware requirements of GPUs"
+            position: 1
+          - id: 3008
+            question_id: 302
+            text: "To focus on specific parts of the input sequence when generating output"
+            position: 2
+          - id: 3009
+            question_id: 302
+            text: "To erase inaccurate training data automatically"
+            position: 3
+          - id: 3010
+            question_id: 302
+            text: "To convert textual data directly into physical motion"
             position: 4
 
-      - id: 210
-        title: "Order these major AI startups chronologically by their founding date (Earliest to Most Recent)."
-        question_type: "drag_drop_order"
-        correct_answer_ids: [2033, 2034, 2035, 2036]
+      - id: 306
+        title: "'Narrow AI' (or Weak AI) refers to systems designed and trained to perform a wide variety of tasks equal to human intellect."
+        question_type: "true_false"
+        correct_answer_ids: [3012]
         options:
-          - id: 2033
-            question_id: 210
-            text: "OpenAI "
+          - id: 3011
+            question_id: 306
+            text: "True"
             position: 1
-          - id: 2034
-            question_id: 210
-            text: "Anthropic "
+          - id: 3012
+            question_id: 306
+            text: "False"
             position: 2
-          - id: 2035
-            question_id: 210
-            text: "Mistral AI "
+
+      - id: 309
+        title: "Arrange these Learning Type terms on the left to match definitions A, B, and C in order:\nA) Asking a model to perform a task without giving it explicit example pairs first.\nB) Finding hidden patterns, structures, or clusters in unlabeled dataset inputs.\nC) Models designed to synthesize new content like text, code, images, or audio."
+        question_type: "drag_drop_order"
+        correct_answer_ids: [3022, 3020, 3021]
+        options:
+          - id: 3020
+            question_id: 309
+            text: "Unsupervised Learning"
+            position: 1
+          - id: 3021
+            question_id: 309
+            text: "Generative AI"
+            position: 2
+          - id: 3022
+            question_id: 309
+            text: "Zero-Shot Prompting"
             position: 3
-          - id: 2036
-            question_id: 210
-            text: "DeepSeek "
+
+      - id: 303
+        title: "Which term describes a scenario where an AI model generates confident-sounding answers that are factually incorrect or unsupported by its training data?"
+        question_type: "single_choice"
+        correct_answer_ids: [3015]
+        options:
+          - id: 3013
+            question_id: 303
+            text: "Overfitting"
+            position: 1
+          - id: 3014
+            question_id: 303
+            text: "Vanishing Gradient"
+            position: 2
+          - id: 3015
+            question_id: 303
+            text: "Hallucination"
+            position: 3
+          - id: 3016
+            question_id: 303
+            text: "Quantization"
+            position: 4
+
+      - id: 307
+        title: "Overfitting occurs when a machine learning model performs exceptionally well on its training data but poorly on unseen test data."
+        question_type: "true_false"
+        correct_answer_ids: [3016_tf]
+        options:
+          - id: 3016_tf
+            question_id: 307
+            text: "True"
+            position: 1
+          - id: 3017_tf
+            question_id: 307
+            text: "False"
+            position: 2
+
+      - id: 310
+        title: "Arrange these Model Components on the left to match definitions A, B, and C in order:\nA) A mathematical metric that measures how far off a model's predictions are from actual values.\nB) External configuration setting set before training (e.g., learning rate or batch size).\nC) The primary portion of a dataset used to teach the AI model weights."
+        question_type: "drag_drop_order"
+        correct_answer_ids: [3025, 3024, 3023]
+        options:
+          - id: 3023
+            question_id: 310
+            text: "Training Set"
+            position: 1
+          - id: 3024
+            question_id: 310
+            text: "Hyperparameter"
+            position: 2
+          - id: 3025
+            question_id: 310
+            text: "Loss Function"
+            position: 3
+
+      - id: 304
+        title: "In deep learning, what is an artificial neural network inspired by?"
+        question_type: "single_choice"
+        correct_answer_ids: [3027]
+        options:
+          - id: 3026
+            question_id: 304
+            text: "The logical flow of microprocessors"
+            position: 1
+          - id: 3027
+            question_id: 304
+            text: "The biological structure and function of human brain neurons"
+            position: 2
+          - id: 3028
+            question_id: 304
+            text: "Quantum mechanics principles"
+            position: 3
+          - id: 3029
+            question_id: 304
+            text: "Traditional file storage hierarchies"
             position: 4
