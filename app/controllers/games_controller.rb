@@ -11,27 +11,30 @@ class GamesController < ApplicationController
     render json: { id: game.id, code: game.game_code }, status: :created
   end
 
-  def advance_step
-    game = current_host.games.find(params[:id])
+ def advance_step
+  game = current_host.games.find(params[:id])
 
-    if game.advance_step!
-      payload = {
-        event: "game_state_changed",
-        game_id: game.id,
-        status: game.status,
-        current_round_id: game.current_round_id,
-        current_question: game.current_question&.as_json,
-        question_started_at: game.question_started_at
-      }
+  if game.advance_step!
+    payload = {
+      event: "game_state_changed",
+      game_id: game.id,
+      status: game.status,
+      current_round_id: game.current_round_id,
+      current_question: game.current_question&.as_json,
+      question_started_at: game.question_started_at
+    }
 
-      ActionCable.server.broadcast(
-        "game_room_#{game.game_code}",
-        payload
-      )
-    else
-      render json: { error: "Unable to advance game state" }, status: :unprocessable_entity
-    end
+    ActionCable.server.broadcast(
+      "game_room_#{game.game_code}",
+      payload
+    )
+
+    render json: payload, status: :ok
+  else
+    render json: { error: "Unable to advance game state" },
+           status: :unprocessable_entity
   end
+ end
 
   def create_player
     game_code = params[:game_code]
