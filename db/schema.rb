@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_07_124228) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_09_080232) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -92,15 +92,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_124228) do
   end
 
   create_table "submissions", force: :cascade do |t|
+    t.jsonb "answer"
     t.datetime "created_at", null: false
-    t.bigint "option_id", null: false
     t.bigint "player_id", null: false
     t.integer "points_awarded", null: false
     t.bigint "question_id", null: false
     t.integer "response_time_ms", null: false
     t.bigint "round_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["option_id"], name: "index_submissions_on_option_id"
     t.index ["player_id", "question_id", "round_id"], name: "index_submissions_on_player_id_and_question_id_and_round_id", unique: true
     t.index ["player_id"], name: "index_submissions_on_player_id"
     t.index ["question_id"], name: "index_submissions_on_question_id"
@@ -114,7 +113,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_124228) do
   add_foreign_key "players", "games"
   add_foreign_key "questions", "rounds"
   add_foreign_key "rounds", "games"
-  add_foreign_key "submissions", "options"
   add_foreign_key "submissions", "players"
   add_foreign_key "submissions", "questions"
   add_foreign_key "submissions", "rounds"

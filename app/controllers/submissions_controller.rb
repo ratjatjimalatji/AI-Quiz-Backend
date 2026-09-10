@@ -1,16 +1,14 @@
 class SubmissionsController < ApplicationController
-  before_action :authenticate_player!, only: [ :create ]
+  before_action :authenticate_player!
 
   def create
     question = Question.find(submission_params[:question_id])
-    option = question.options.find(submission_params[:option_id])
-
     game = current_player.game
 
     response_time_ms =
       ((Time.current - game.question_started_at) * 1000).to_i
 
-    correct = question.correct_answer_ids.include?(option.position)
+    correct = correct_answer?(question)
 
     points_awarded = ScoreUpdater.call(
       player: current_player,
@@ -21,7 +19,7 @@ class SubmissionsController < ApplicationController
     submission = current_player.submissions.create!(
       question: question,
       round: question.round,
-      option: option,
+      answer: submission_params[:answer],
       response_time_ms: response_time_ms,
       points_awarded: points_awarded
     )
@@ -38,7 +36,35 @@ class SubmissionsController < ApplicationController
   def submission_params
     params.require(:submission).permit(
       :question_id,
-      :option_id
+      :answer,
+      answer: []
     )
+  end
+
+  def correct_answer?(question)
+    case question.question_type
+    when "true_false", "multiple_choice"
+      question.correct_answer_ids.include?(
+        submission_params[:answer].to_i
+      )
+
+    when "drag_drop_order"
+      submission_params[:answer].map(&:to_i) ==
+        question.correct_answer_ids
+
+    when "type_the_answer"
+      submitted_answer = submission_params[:answer].to_s.strip
+
+      correct_answers = question.options
+        .where(id: question.correct_answer_ids)
+        .pluck(:text)
+
+      correct_answers.any? do |answer|
+        answer.strip.casecmp?(submitted_answer)
+      end
+
+    else
+      false
+    end
   end
 end
