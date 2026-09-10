@@ -38,5 +38,5 @@ sequence_question:
 fill_in_the_blank_question:
   round: one
   title: "What language is Ruby on Rails written in?"
-  question_type: "fill_in_the_blank"
+  question_type: "type_the_answer"
   correct_answer_ids: <%= [ActiveRecord::FixtureSet.identify(:fill_blank_option)].to_json %>

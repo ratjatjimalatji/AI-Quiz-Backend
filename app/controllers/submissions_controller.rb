@@ -52,7 +52,7 @@ class SubmissionsController < ApplicationController
       submission_params[:answer].map(&:to_i) ==
         question.correct_answer_ids
 
-    when "fill_in_the_blank"
+    when "type_the_answer"
       submitted_answer = submission_params[:answer].to_s.strip
 
       correct_answers = question.options
