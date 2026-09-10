@@ -17,3 +17,23 @@ one_incorrect:
   text: "False"
   position: 2
   question: one
+
+sequence_option_one:
+  question: sequence_question
+  text: "First step"
+  position: 1
+
+sequence_option_two:
+  question: sequence_question
+  text: "Second step"
+  position: 2
+
+sequence_option_three:
+  question: sequence_question
+  text: "Third step"
+  position: 3
+
+fill_blank_option:
+  question: fill_in_the_blank_question
+  text: "Ruby"
+  position: 1
