@@ -15,13 +15,19 @@ class GamesController < ApplicationController
     game = current_host.games.find(params[:id])
 
     if game.advance_step!
-      render json: {
+      payload = {
+        event: "game_state_changed",
         game_id: game.id,
         status: game.status,
         current_round_id: game.current_round_id,
         current_question: game.current_question&.as_json,
         question_started_at: game.question_started_at
-      }, status: :ok
+      }
+
+      ActionCable.server.broadcast(
+        "game_room_#{game.game_code}",
+        payload
+      )
     else
       render json: { error: "Unable to advance game state" }, status: :unprocessable_entity
     end
