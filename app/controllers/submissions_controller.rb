@@ -24,6 +24,16 @@ class SubmissionsController < ApplicationController
       points_awarded: points_awarded
     )
 
+    ActionCable.server.broadcast(
+    "game_room_#{game.game_code}",
+    {
+      event: "answer_submitted",
+      player_id: current_player.id,
+      player_name: current_player.username,
+      question_id: question.id
+    }
+  )
+
     render json: {
       submission: submission,
       correct: correct,
