@@ -25,16 +25,20 @@ class QuizPopulator
             position: q_data["position"] || q_idx + 1
           )
 
-          correct_ids = []
+          template_correct_ids = q_data.fetch("correct_answer_ids", [])
+          id_map = {}
+
           q_data.fetch("options").each_with_index do |o_data, o_idx|
             option = question.options.create!(
               text: o_data["text"],
               position: o_data["position"] || o_idx + 1
             )
-            correct_ids << option.id if o_data["correct"]
+            id_map[o_data["id"]] = option.id
           end
 
-          question.update!(correct_answer_ids: correct_ids)
+          new_correct_ids = template_correct_ids.map { |old_id| id_map.fetch(old_id) }
+
+          question.update!(correct_answer_ids: new_correct_ids)
         end
       end
     end
