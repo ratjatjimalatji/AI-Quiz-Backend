@@ -3,7 +3,13 @@ template_question:
   question_type: 0
   round: template_round
   position: 1
-  correct_answer_ids: <%= [ActiveRecord::FixtureSet.identify(:template_option_correct)].to_json %>
+  correct_answer_ids: [1]
+
+fill_in_the_blank_question:
+  round: one
+  title: "What language is Ruby on Rails written in?"
+  question_type: "type_the_answer"
+  correct_answer_ids: [1]
 
 one:
   round: one
@@ -34,9 +40,3 @@ sequence_question:
   title: "Put these steps in the correct order."
   question_type: "drag_drop_order"
   correct_answer_ids: [1, 2, 3]
-
-fill_in_the_blank_question:
-  round: one
-  title: "What language is Ruby on Rails written in?"
-  question_type: "type_the_answer"
-  correct_answer_ids: <%= [ActiveRecord::FixtureSet.identify(:fill_blank_option)].to_json %>
