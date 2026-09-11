@@ -16,6 +16,7 @@ class SubmissionsController < ApplicationController
       response_time_ms: response_time_ms
     )
 
+
     submission = current_player.submissions.create!(
       question: question,
       round: question.round,
@@ -43,7 +44,7 @@ class SubmissionsController < ApplicationController
 
   def correct_answer?(question)
     case question.question_type
-    when "true_false", "multiple_choice"
+    when "true_false", "single_choice"
       question.correct_answer_ids.include?(
         submission_params[:answer].to_i
       )
