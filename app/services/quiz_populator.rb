@@ -22,19 +22,16 @@ class QuizPopulator
           question = round.questions.create!(
             title: q_data["title"],
             question_type: q_data["question_type"],
-            position: q_data["position"] || q_idx + 1
+            position: q_data["position"] || q_idx + 1,
+            correct_answer_ids: q_data.fetch("correct_answer_ids", [])
           )
 
-          correct_ids = []
           q_data.fetch("options").each_with_index do |o_data, o_idx|
-            option = question.options.create!(
+            question.options.create!(
               text: o_data["text"],
-              position: o_data["position"] || o_idx + 1
+              position: o_data["position"] || (o_idx + 1)
             )
-            correct_ids << option.id if o_data["correct"]
           end
-
-          question.update!(correct_answer_ids: correct_ids)
         end
       end
     end

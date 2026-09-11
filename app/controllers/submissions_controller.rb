@@ -53,7 +53,7 @@ class SubmissionsController < ApplicationController
 
   def correct_answer?(question)
     case question.question_type
-    when "true_false", "multiple_choice"
+    when "true_false", "single_choice"
       question.correct_answer_ids.include?(
         submission_params[:answer].to_i
       )
@@ -66,7 +66,7 @@ class SubmissionsController < ApplicationController
       submitted_answer = submission_params[:answer].to_s.strip
 
       correct_answers = question.options
-        .where(id: question.correct_answer_ids)
+        .where(position: question.correct_answer_ids)
         .pluck(:text)
 
       correct_answers.any? do |answer|
