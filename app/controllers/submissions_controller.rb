@@ -16,7 +16,6 @@ class SubmissionsController < ApplicationController
       response_time_ms: response_time_ms
     )
 
-
     submission = current_player.submissions.create!(
       question: question,
       round: question.round,
@@ -57,7 +56,7 @@ class SubmissionsController < ApplicationController
       submitted_answer = submission_params[:answer].to_s.strip
 
       correct_answers = question.options
-        .where(id: question.correct_answer_ids)
+        .where(position: question.correct_answer_ids)
         .pluck(:text)
 
       correct_answers.any? do |answer|
