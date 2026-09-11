@@ -24,6 +24,20 @@ class SubmissionsController < ApplicationController
       points_awarded: points_awarded
     )
 
+    submission_count = Submission.where(question_id: question.id).count
+
+    ActionCable.server.broadcast(
+    "game_room_#{game.game_code}",
+    {
+      event: "answer_submitted",
+      player_id: current_player.id,
+      player_name: current_player.username,
+      question_id: question.id,
+      players_submitted: submission_count,
+      total_players: game.players.where(eliminated: false).count
+    }
+  )
+
     render json: {
       submission: submission,
       correct: correct,
