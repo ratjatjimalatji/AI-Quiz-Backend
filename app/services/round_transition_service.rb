@@ -16,9 +16,14 @@ class RoundTransitionService
       question_started_at: nil
     )
 
-    GameChannel.broadcast_to(@game, {
-      event: "round_summary"
-    })
+    ActionCable.server.broadcast(
+      "game_room_#{@game.game_code}",
+      {
+        event: "round_summary",
+        game_id: @game.id,
+        round_id: @round.id
+      }
+    )
 
     elimination_result = PlayerEliminationService.call(@game, @round)
 
