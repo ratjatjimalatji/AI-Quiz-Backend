@@ -12,7 +12,7 @@ class GamesController < ApplicationController
   end
 
  def advance_step
-  game = current_host.games.find(params[:id])
+  game = current_host.games.includes(current_question: :options).find(params[:id])
 
   if game.advance_step!
     payload = {
@@ -46,7 +46,7 @@ class GamesController < ApplicationController
 
     game = Game.find_by(game_code: game_code)
 
-    if game.players.count >= game.player_limit
+    if game.players_count >= game.player_limit
       render json: {
         error: I18n.t(
           "activerecord.errors.models.game.attributes.player_limit.limit_exceeded"
@@ -66,7 +66,7 @@ class GamesController < ApplicationController
       {
         event: "player_joined",
         player: { id: player.id, username: player.username },
-        total_players: game.players.count,
+        total_players: game.players_count,
         player_limit: game.player_limit
       }
     )

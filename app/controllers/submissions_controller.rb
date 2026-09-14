@@ -69,9 +69,7 @@ class SubmissionsController < ApplicationController
     when "type_the_answer"
       submitted_answer = submission_params[:answer].to_s.strip
 
-      correct_answers = question.options
-        .where(position: question.correct_answer_ids)
-        .pluck(:text)
+      correct_answers = question.options.select { |opt| question.correct_answer_ids.include?(opt.position) }.map(&:text)
 
       correct_answers.any? do |answer|
         answer.strip.casecmp?(submitted_answer)
