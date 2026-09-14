@@ -12,7 +12,7 @@ class GamesController < ApplicationController
   end
 
  def advance_step
-  game = current_host.games.find(params[:id])
+  game = current_host.games.includes(current_question: :options).find(params[:id])
 
   if game.advance_step!
     payload = {

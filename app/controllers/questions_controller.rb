@@ -2,7 +2,7 @@ class QuestionsController < ApplicationController
   before_action :authenticate_host!, only: [ :create ]
   before_action :set_question, only: :update
   def index
-    questions = Question.all
+    questions = Question.includes(:options).all
     render json: questions
   end
 

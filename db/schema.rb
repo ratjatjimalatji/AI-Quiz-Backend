@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_09_080232) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_14_090710) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -55,6 +55,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_080232) do
     t.string "token"
     t.datetime "updated_at", null: false
     t.string "username"
+    t.index ["game_id", "eliminated"], name: "index_players_on_game_id_and_eliminated"
     t.index ["game_id"], name: "index_players_on_game_id"
     t.index ["token"], name: "index_players_on_token", unique: true
   end
@@ -68,6 +69,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_080232) do
     t.datetime "shown_at"
     t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.index ["round_id", "position", "id"], name: "index_questions_on_round_id_and_position_and_id"
     t.index ["round_id"], name: "index_questions_on_round_id"
   end
 
