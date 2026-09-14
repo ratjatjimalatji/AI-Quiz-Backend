@@ -11,11 +11,13 @@ class QuestionTransitionService
   def process
     @game.update!(status: :question_review)
 
-    # 3. Broadcast answers and response breakdown to clients
-    GameChannel.broadcast_to(@game, {
+     ActionCable.server.broadcast(
+      "game_room_#{@game.game_code}",
+      {
       event: "question_review",
       question_id: @question.id,
       correct_answer_ids: @question.correct_answer_ids
-    })
+      }
+    )
   end
 end
