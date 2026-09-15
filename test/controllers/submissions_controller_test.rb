@@ -9,11 +9,11 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     @headers = { "Authorization" => "Bearer #{@player.token}" }
 
     @correct_option = @question.options.find do |option|
-      @question.correct_answer_ids.include?(option.position)
+      @question.correct_option_position.include?(option.position)
     end
 
     @incorrect_option = @question.options.find do |option|
-      !@question.correct_answer_ids.include?(option.position)
+      !@question.correct_option_position.include?(option.position)
     end
   end
 
@@ -183,7 +183,7 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     question_started_at: 4.seconds.ago
   )
 
-  correct_sequence = question.correct_answer_ids
+  correct_sequence = question.correct_option_position
 
   assert_difference("Submission.count", 1) do
     post submissions_path,
@@ -222,7 +222,7 @@ test "creates a submission with zero points for an incorrect sequence answer" do
     question_started_at: 4.seconds.ago
   )
 
-  incorrect_sequence = question.correct_answer_ids.reverse
+  incorrect_sequence = question.correct_option_position.reverse
 
   assert_difference("Submission.count", 1) do
     post submissions_path,

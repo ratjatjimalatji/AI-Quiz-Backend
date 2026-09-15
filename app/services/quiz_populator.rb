@@ -23,7 +23,7 @@ class QuizPopulator
             title: q_data["title"],
             question_type: q_data["question_type"],
             position: q_data["position"] || q_idx + 1,
-            correct_answer_ids: q_data.fetch("correct_answer_ids", [])
+            correct_option_position: q_data.fetch("correct_option_position", [])
           )
 
           q_data.fetch("options").each_with_index do |o_data, o_idx|
