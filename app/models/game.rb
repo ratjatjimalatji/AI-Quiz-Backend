@@ -39,12 +39,12 @@ class Game < ApplicationRecord
 
       # 2. Question transitions to review after all players have submitted their answers
       if in_progress?
-        QuestionTransitionService.call(self)
-        return true
-      end
+        #   QuestionTransitionService.call(self)
+        #   return true
+        # end
 
-      # 3. If currently reviewing a question, decide next destination
-      if question_review?
+        # # 3. If currently reviewing a question, decide next destination
+        # if question_review?
         next_question = go_to_next_question(current_question)
 
         if next_question.present?
