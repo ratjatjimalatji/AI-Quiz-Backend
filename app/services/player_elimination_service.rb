@@ -42,7 +42,13 @@ class PlayerEliminationService
         event: "players_eliminated",
         round_id: @current_round.id,
         round_title: @current_round.title,
-        advancing_player_ids: advancing.map(&:id),
+        advancing_player_ids: advancing.map do |p|
+          {
+            id: p.id,
+            username: p.username,
+            score: p.score
+          }
+        end,
         eliminated_players: eliminated.map do |p|
           {
             id: p.id,
