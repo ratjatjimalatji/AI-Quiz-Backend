@@ -11,7 +11,7 @@ class RoundResultsService
   def execute
     advancing_players = PlayerAdvancementService.call(@game)
 
-    eliminated_players = PlayerEliminationService.call(
+    PlayerEliminationService.call(
       game: @game,
       advancing_players: advancing_players
     )
@@ -20,21 +20,18 @@ class RoundResultsService
 
     winner = remaining_players.one? ? remaining_players.first : nil
 
-    broadcast_results(
-      advancing_players,
-      eliminated_players,
-      winner
-    )
+    players = @game.players.order(score: :desc)
+
+    broadcast_results(players, winner)
     {
-      advancing: advancing_players,
-      eliminated: eliminated_players,
+      players: players,
       winner: winner
     }
   end
 
   private
 
-  def broadcast_results(advancing_players, eliminated_players, winner)
+  def broadcast_results(players, winner)
     ActionCable.server.broadcast(
       "game_room_#{@game.game_code}",
       {
@@ -42,19 +39,12 @@ class RoundResultsService
         round_id: @current_round.id,
         round_title: @current_round.title,
 
-        advancing_players: advancing_players.map do |player|
+        players: players.map do |player|
           {
             id: player.id,
             username: player.username,
-            score: player.score
-          }
-        end,
-
-        eliminated_players: eliminated_players.map do |player|
-          {
-            id: player.id,
-            username: player.username,
-            final_score: player.score
+            score: player.score,
+            eliminated: player.eliminated
           }
         end,
 
