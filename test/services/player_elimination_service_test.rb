@@ -81,7 +81,11 @@ class PlayerEliminationServiceTest < ActiveSupport::TestCase
       event: "players_eliminated",
       round_id: round.id,
       round_title: round.title,
-      advancing_player_ids: [ player_one.id ],
+      advancing_player_ids: [
+        id: player_one.id,
+        username: player_one.username,
+        score: player_one.score
+      ],
       eliminated_players: [
         {
           id: player_two.id,
