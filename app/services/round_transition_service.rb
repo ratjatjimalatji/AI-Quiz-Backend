@@ -25,7 +25,7 @@ class RoundTransitionService
       }
     )
 
-    elimination_result = PlayerEliminationService.call(@game, @round)
+    elimination_result = RoundResultsService.call(@game, @round)
 
   {
     advancing: elimination_result[:advancing],

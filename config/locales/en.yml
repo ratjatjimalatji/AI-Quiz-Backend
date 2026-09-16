@@ -61,3 +61,10 @@ en:
             token:
               blank: "is required"
               taken: "has already been used"
+
+  errors: 
+    game: 
+        not_found: "Game not found" 
+        no_longer_active: "Game is no longer active" 
+    player: 
+        invalid_session_token: "Invalid session token"

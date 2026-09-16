@@ -1,5 +1,5 @@
 class HostsController < ApplicationController
-before_action :authenticate_host!, only: [ :create_game ]
+before_action :authenticate_host!, only: [ :create_game, :rejoin ]
   def index
       render json: Host.all
   end
@@ -38,10 +38,34 @@ before_action :authenticate_host!, only: [ :create_game ]
     end
   end
 
+  def rejoin
+    game = current_host.games.find_by(game_code: params[:game_code])
 
-    private
-
-    def host_params
-      params.require(:host).permit(:name)
+    unless game
+      return render json: { error: I18n.t("errors.game.not_found") }, status: :not_found
     end
+
+    if game.completed?
+      return render json: { error: I18n.t("errors.game.completed"), game_status: game.status }, status: :gone
+    end
+
+    render json: {
+      success: true,
+      host: { id: current_host.id, name: current_host.name },
+      game: {
+        id: game.id,
+        game_code: game.game_code,
+        status: game.status,
+        current_round_id: game.current_round_id,
+        players_count: game.players.count
+      }
+    }, status: :ok
+  end
+
+
+  private
+
+  def host_params
+    params.require(:host).permit(:name)
+  end
 end
