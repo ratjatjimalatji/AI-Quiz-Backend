@@ -6,7 +6,9 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  resources :players, only: [ :index, :show ]
+  resources :players, only: [ :index, :show ] do
+    post :rejoin, on: :collection
+  end
 
   resources :games, only: [ :index ] do
     post :create_player, on: :collection
@@ -19,6 +21,7 @@ Rails.application.routes.draw do
 
   resources :hosts, only: [ :index, :create ] do
     post :create_game, on: :member
+    post :rejoin, on: :collection
   end
   resources :submissions, only: [ :create ]
 end
