@@ -16,7 +16,7 @@ class QuestionTransitionService
       {
       event: "question_review",
       question_id: @question.id,
-      correct_answer_ids: @question.correct_answer_ids
+      correct_option_positions: @question.correct_option_positions
       }
     )
   end
