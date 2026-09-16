@@ -32,7 +32,7 @@ class RoundsController < ApplicationController
         :question_type,
         :_destroy,
         {
-        correct_answer_ids: [],
+        correct_option_positions: [],
         options_attributes: [ :id, :text, :position, :_destroy ]
       }
       ]

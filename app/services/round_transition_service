@@ -1,0 +1,41 @@
+class RoundTransitionService
+  def self.call(game)
+    new(game).process
+  end
+
+  def initialize(game)
+    @game = game
+    @round = game.current_round
+  end
+
+  def process
+    # 1. Put the game into the summary state
+    @game.update!(
+      status: :round_summary,
+      current_question: nil,
+      question_started_at: nil
+    )
+
+    # 2. Compute leaderboard and process eliminations
+    leaderboard = build_leaderboard
+
+    # 3. Broadcast the round results and elimination roster
+    GameChannel.broadcast_to(@game, {
+      event: "round_summary",
+      round_id: @round.id,
+      leaderboard: leaderboard,
+      eliminated_player_ids: eliminated_players.map(&:id)
+    })
+
+    { leaderboard: leaderboard }
+  end
+
+   private
+
+    def build_leaderboard
+      @game.players
+           .order(score: :desc)
+           .select(:id, :name, :score, :active)
+           .as_json
+    end
+end

@@ -1,0 +1,15 @@
+$kind: http-request
+name: http://localhost:3000/hosts
+description: ""
+url: http://localhost:3000/hosts
+method: POST
+body:
+  type: json
+  content: |-
+    {"name": "Cat"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: U4QzGLCAMDrJn8Ueu4Vyr5JG
+order: 1789500403605

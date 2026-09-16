@@ -25,11 +25,11 @@ ActiveRecord::Base.transaction do
         yaml_to_db_option_id[opt_raw["position"]] = option.id
       end
 
-      mapped_correct_ids = (q_raw["correct_answer_ids"] || []).map do |position|
+      mapped_correct_ids = (q_raw["correct_option_positions"] || []).map do |position|
         yaml_to_db_option_id[position]
       end.compact
 
-      question.update!(correct_answer_ids: mapped_correct_ids)
+      question.update!(correct_option_positions: mapped_correct_ids)
     end
   end
 end
