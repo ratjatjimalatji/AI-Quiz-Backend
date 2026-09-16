@@ -3,40 +3,40 @@ template_question:
   question_type: 0
   round: template_round
   position: 1
-  correct_option_position: [1]
+  correct_option_positions: [1]
 
 fill_in_the_blank_question:
   round: one
   title: "What language is Ruby on Rails written in?"
   question_type: "type_the_answer"
-  correct_option_position: [1]
+  correct_option_positions: [1]
 
 one:
   round: one
   title: "Anthropic was founded before OpenAI."
   question_type: "true_false"
-  correct_option_position: [1]
+  correct_option_positions: [1]
 
 two:
   round: one
   title: "What is the capital of France?"
   question_type: "multiple_choice"
-  correct_option_position: [2]
+  correct_option_positions: [2]
 
 three:
   round: one
   title: "Ruby on Rails is written in Ruby."
   question_type: "true_false"
-  correct_option_position: [1]
+  correct_option_positions: [1]
 
 four:
   round: one
   title: "Which planet is known as the Red Planet?"
   question_type: "multiple_choice"
-  correct_option_position: [3]
+  correct_option_positions: [3]
 
 sequence_question:
   round: one
   title: "Put these steps in the correct order."
   question_type: "drag_drop_order"
-  correct_option_position: [1, 2, 3]
+  correct_option_positions: [1, 2, 3]

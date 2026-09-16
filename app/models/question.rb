@@ -14,19 +14,19 @@ class Question < ApplicationRecord
 
   def as_json(options = {})
     default_options = {
-      except: [ :correct_option_position ],
+      except: [ :correct_option_positions ],
       include: :options
     }
     super(default_options.deep_merge(options))
   end
 
-  before_validation :set_default_correct_option_position, on: :create
+  before_validation :set_default_correct_option_positions, on: :create
 
   private
 
-  def set_default_correct_option_position
-    return if correct_option_position.present?
+  def set_default_correct_option_positions
+    return if correct_option_positions.present?
 
-    self.correct_option_position = []
+    self.correct_option_positions= []
   end
 end

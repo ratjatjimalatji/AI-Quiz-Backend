@@ -11,7 +11,7 @@ class Round < ApplicationRecord
     default_options = {
       include: {
         questions: {
-          except: [ :correct_option_position ],
+          except: [ :correct_option_positions ],
           include: :options
         }
       }

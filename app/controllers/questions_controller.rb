@@ -40,7 +40,7 @@ class QuestionsController < ApplicationController
       :question_type,
       :round_id,
       :position,
-      correct_option_position: [],
+      correct_option_positions: [],
       options_attributes: [ :id, :text, :position, :_destroy ]
     )
   end
