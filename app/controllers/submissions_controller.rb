@@ -58,18 +58,18 @@ class SubmissionsController < ApplicationController
   def correct_answer?(question)
     case question.question_type
     when "true_false", "single_choice"
-      question.correct_answer_ids.include?(
+      question.correct_option_positions.include?(
         submission_params[:answer].to_i
       )
 
     when "drag_drop_order"
       submission_params[:answer].map(&:to_i) ==
-        question.correct_answer_ids
+        question.correct_option_positions
 
     when "type_the_answer"
       submitted_answer = submission_params[:answer].to_s.strip
 
-      correct_answers = question.options.select { |opt| question.correct_answer_ids.include?(opt.position) }.map(&:text)
+      correct_answers = question.options.select { |opt| question.correct_option_positions.include?(opt.position) }.map(&:text)
 
       correct_answers.any? do |answer|
         answer.strip.casecmp?(submitted_answer)
