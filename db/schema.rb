@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_17_130427) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_17_173023) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,8 +52,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_17_130427) do
     t.datetime "created_at", null: false
     t.boolean "eliminated", default: false
     t.integer "game_id"
+    t.string "power_ups", default: [], array: true
     t.integer "score", default: 0
-    t.string "super_powers", default: [], array: true
     t.string "token"
     t.datetime "updated_at", null: false
     t.string "username"
