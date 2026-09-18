@@ -12,13 +12,18 @@ class Question < ApplicationRecord
     type_the_answer: 4
   }
 
-  def as_json(options = {})
+ def as_json(options = {})
     default_options = {
       except: [ :correct_option_positions ],
-      include: :options
+      include: {
+        options: {
+          methods: :image_url
+        }
+      }
     }
+
     super(default_options.deep_merge(options))
-  end
+ end
 
   before_validation :set_default_correct_option_positions, on: :create
 
