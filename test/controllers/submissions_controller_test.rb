@@ -3,7 +3,7 @@ require "test_helper"
 class SubmissionsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @player = players(:one)
-    @player.update!(token: "player-one-token")
+    @player.update!(token: "player-one-token", score: 0)
     @question = questions(:one)
     @game = @player.game
     @headers = { "Authorization" => "Bearer #{@player.token}" }
@@ -212,147 +212,342 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
 
   assert_equal true, response_body["correct"]
   assert_equal 100, response_body["points_awarded"]
-end
+  end
 
-test "creates a submission with zero points for an incorrect sequence answer" do
-  question = questions(:sequence_question)
+  test "creates a submission with zero points for an incorrect sequence answer" do
+    question = questions(:sequence_question)
 
-  @game.update!(
-    current_question_id: question.id,
-    question_started_at: 4.seconds.ago
-  )
+    @game.update!(
+      current_question_id: question.id,
+      question_started_at: 4.seconds.ago
+    )
 
-  incorrect_sequence = question.correct_option_positions.reverse
+    incorrect_sequence = question.correct_option_positions.reverse
 
-  assert_difference("Submission.count", 1) do
+    assert_difference("Submission.count", 1) do
+      post submissions_path,
+        params: {
+          submission: {
+            question_id: question.id,
+            answer: incorrect_sequence
+          }
+        },
+        headers: @headers
+    end
+
+    assert_response :created
+
+    submission = @player.submissions.find_by!(question: question)
+
+    assert_equal @player.id, submission.player_id
+    assert_equal question.id, submission.question_id
+    assert_equal question.round.id, submission.round_id
+    assert_equal incorrect_sequence, submission.answer.map(&:to_i)
+
+    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_equal 0, submission.points_awarded
+
+    response_body = JSON.parse(response.body)
+
+    assert_equal false, response_body["correct"]
+    assert_equal 0, response_body["points_awarded"]
+  end
+
+  test "creates a submission for a correct fill in the blank answer" do
+    question = questions(:fill_in_the_blank_question)
+
+    @game.update!(
+      current_question_id: question.id,
+      question_started_at: 4.seconds.ago
+    )
+
+    correct_answer = question.options.first.text
+
+    assert_difference("Submission.count", 1) do
+      post submissions_path,
+        params: {
+          submission: {
+            question_id: question.id,
+            answer: correct_answer
+          }
+        },
+        headers: @headers
+    end
+
+    assert_response :created
+
+    submission = @player.submissions.find_by!(question: question)
+
+    assert_equal @player.id, submission.player_id
+    assert_equal question.id, submission.question_id
+    assert_equal question.round.id, submission.round_id
+    assert_equal correct_answer, submission.answer
+
+    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_equal 100, submission.points_awarded
+
+    response_body = JSON.parse(response.body)
+
+    assert_equal true, response_body["correct"]
+    assert_equal 100, response_body["points_awarded"]
+  end
+
+  test "accepts a fill in the blank answer regardless of case and surrounding whitespace" do
+    question = questions(:fill_in_the_blank_question)
+
+    @game.update!(
+      current_question_id: question.id,
+      question_started_at: 4.seconds.ago
+    )
+
+    correct_answer = question.options.first.text
+
     post submissions_path,
       params: {
         submission: {
           question_id: question.id,
-          answer: incorrect_sequence
+          answer: "  #{correct_answer.downcase}  "
         }
-      },
-      headers: @headers
+        },
+        headers: @headers
+
+    assert_response :created
+
+    response_body = JSON.parse(response.body)
+
+    assert_equal true, response_body["correct"]
+    assert_equal 100, response_body["points_awarded"]
   end
 
-  assert_response :created
+  test "creates a submission with zero points for an incorrect fill in the blank answer" do
+    question = questions(:fill_in_the_blank_question)
 
-  submission = @player.submissions.find_by!(question: question)
+    @game.update!(
+      current_question_id: question.id,
+      question_started_at: 4.seconds.ago
+    )
 
-  assert_equal @player.id, submission.player_id
-  assert_equal question.id, submission.question_id
-  assert_equal question.round.id, submission.round_id
-  assert_equal incorrect_sequence, submission.answer.map(&:to_i)
+    assert_difference("Submission.count", 1) do
+      post submissions_path,
+        params: {
+          submission: {
+            question_id: question.id,
+            answer: "Definitely not the answer"
+          }
+        },
+        headers: @headers
+    end
 
-  assert_in_delta 4_000, submission.response_time_ms, 100
-  assert_equal 0, submission.points_awarded
+    assert_response :created
 
-  response_body = JSON.parse(response.body)
+    submission = @player.submissions.find_by!(question: question)
 
-  assert_equal false, response_body["correct"]
-  assert_equal 0, response_body["points_awarded"]
-end
+    assert_equal @player.id, submission.player_id
+    assert_equal question.id, submission.question_id
+    assert_equal question.round.id, submission.round_id
+    assert_equal "Definitely not the answer", submission.answer
 
-test "creates a submission for a correct fill in the blank answer" do
-  question = questions(:fill_in_the_blank_question)
+    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_equal 0, submission.points_awarded
 
-  @game.update!(
-    current_question_id: question.id,
-    question_started_at: 4.seconds.ago
+    response_body = JSON.parse(response.body)
+
+    assert_equal false, response_body["correct"]
+    assert_equal 0, response_body["points_awarded"]
+  end
+
+  test "activates double points and awards 2x points for a correct answer" do
+    question = questions(:fill_in_the_blank_question)
+    game = question.round.game
+    player = players(:one)
+
+    game.update!(
+      current_question_id: question.id,
+      question_started_at: 4.seconds.ago,
+      status: "in_progress"
+    )
+
+    @player.update!(
+    score: 0,
+    power_ups: %w[double_points automatic_100_points],
+    active_power_up: nil,
+    active_power_up_question_id: nil
   )
 
-  correct_answer = question.options.first.text
-
-  assert_difference("Submission.count", 1) do
-    post submissions_path,
+    # 1. Activate double_points power-up
+    post power_ups_use_path,
       params: {
-        submission: {
+        power_up: {
           question_id: question.id,
-          answer: correct_answer
+          power_name: "double_points"
         }
       },
       headers: @headers
+
+    assert_response :ok
+    player.reload
+    assert_equal "double_points", player.active_power_up
+    assert_equal question.id, player.active_power_up_question_id
+    assert_not_includes player.power_ups, "double_points"
+
+    correct_answer = question.options.find_by!(position: question.correct_option_positions.first).text
+
+    # 2. Submit correct answer; base score is 100, doubled to 200
+    assert_difference("Submission.count", 1) do
+      post submissions_path,
+        params: {
+          submission: {
+            question_id: question.id,
+            answer: correct_answer
+          }
+        },
+        headers: @headers
+    end
+
+    assert_response :created
+
+    submission = player.submissions.find_by!(question: question)
+
+    assert_equal player.id, submission.player_id
+    assert_equal question.id, submission.question_id
+    assert_equal question.round.id, submission.round_id
+    assert_equal correct_answer, submission.answer
+
+    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_equal 200, submission.points_awarded
+
+    response_body = JSON.parse(response.body)
+    assert_equal true, response_body["correct"]
+    assert_equal 200, response_body["points_awarded"]
+
+    # 3. Verify player score incremented and active power-up was consumed
+    player.reload
+    assert_equal 200, player.score
+    assert_nil player.active_power_up
+    assert_nil player.active_power_up_question_id
   end
 
-  assert_response :created
+  test "activates double points and awards zero points for an incorrect answer" do
+    question = questions(:sequence_question)
+    game = question.round.game
+    player = players(:one)
 
-  submission = @player.submissions.find_by!(question: question)
+    game.update!(
+      current_question_id: question.id,
+      question_started_at: 4.seconds.ago,
+      status: "in_progress"
+    )
 
-  assert_equal @player.id, submission.player_id
-  assert_equal question.id, submission.question_id
-  assert_equal question.round.id, submission.round_id
-  assert_equal correct_answer, submission.answer
+    @player.update!(
+    score: 0,
+    power_ups: %w[double_points automatic_100_points],
+    active_power_up: nil,
+    active_power_up_question_id: nil
+    )
 
-  assert_in_delta 4_000, submission.response_time_ms, 100
-  assert_equal 100, submission.points_awarded
-
-  response_body = JSON.parse(response.body)
-
-  assert_equal true, response_body["correct"]
-  assert_equal 100, response_body["points_awarded"]
-end
-
-test "accepts a fill in the blank answer regardless of case and surrounding whitespace" do
-  question = questions(:fill_in_the_blank_question)
-
-  @game.update!(
-    current_question_id: question.id,
-    question_started_at: 4.seconds.ago
-  )
-
-  correct_answer = question.options.first.text
-
-  post submissions_path,
-    params: {
-      submission: {
-        question_id: question.id,
-        answer: "  #{correct_answer.downcase}  "
-      }
-      },
-      headers: @headers
-
-  assert_response :created
-
-  response_body = JSON.parse(response.body)
-
-  assert_equal true, response_body["correct"]
-  assert_equal 100, response_body["points_awarded"]
-end
-
-test "creates a submission with zero points for an incorrect fill in the blank answer" do
-  question = questions(:fill_in_the_blank_question)
-
-  @game.update!(
-    current_question_id: question.id,
-    question_started_at: 4.seconds.ago
-  )
-
-  assert_difference("Submission.count", 1) do
-    post submissions_path,
+    # 1. Activate double_points power-up
+    post power_ups_use_path,
       params: {
-        submission: {
+        power_up: {
           question_id: question.id,
-          answer: "Definitely not the answer"
+          power_name: "double_points"
         }
       },
       headers: @headers
+
+    assert_response :ok
+    player.reload
+    assert_equal "double_points", player.active_power_up
+    assert_equal question.id, player.active_power_up_question_id
+    assert_not_includes player.power_ups, "double_points"
+
+    incorrect_sequence = question.correct_option_positions.reverse
+
+    # 2. Submit incorrect answer; 0 multiplied by 2 remains 0
+    assert_difference("Submission.count", 1) do
+      post submissions_path,
+        params: {
+          submission: {
+            question_id: question.id,
+            answer: incorrect_sequence
+          }
+        },
+        headers: @headers
+    end
+
+    assert_response :created
+
+    submission = player.submissions.find_by!(question: question)
+
+    assert_equal player.id, submission.player_id
+    assert_equal question.id, submission.question_id
+    assert_equal question.round.id, submission.round_id
+    assert_equal incorrect_sequence, submission.answer.map(&:to_i)
+
+    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_equal 0, submission.points_awarded
+
+    response_body = JSON.parse(response.body)
+    assert_equal false, response_body["correct"]
+    assert_equal 0, response_body["points_awarded"]
+
+    # 3. Verify power-up is still consumed and score stays at 0
+    player.reload
+    assert_equal 0, player.score
+    assert_nil player.active_power_up
+    assert_nil player.active_power_up_question_id
   end
 
-  assert_response :created
+  test "auto_100_points immediately creates a submission and awards 100 points without an answer" do
+    question = questions(:sequence_question)
+    game = question.round.game
+    player = players(:one)
 
-  submission = @player.submissions.find_by!(question: question)
+    game.update!(
+      current_question_id: question.id,
+      question_started_at: 8.seconds.ago, # Beyond free time, but score must still be 100
+      status: "in_progress"
+    )
 
-  assert_equal @player.id, submission.player_id
-  assert_equal question.id, submission.question_id
-  assert_equal question.round.id, submission.round_id
-  assert_equal "Definitely not the answer", submission.answer
+    player.update!(
+    score: 0,
+    power_ups: %w[automatic_100_points double_points],
+    active_power_up: nil,
+    active_power_up_question_id: nil
+    )
 
-  assert_in_delta 4_000, submission.response_time_ms, 100
-  assert_equal 0, submission.points_awarded
+    # Trigger auto_100_points: creates submission immediately
+    assert_difference("Submission.count", 1) do
+      post power_ups_use_path,
+        params: {
+          power_up: {
+            question_id: question.id,
+            power_name: "automatic_100_points"
+          }
+        },
+        headers: @headers
+    end
 
-  response_body = JSON.parse(response.body)
+    assert_response :ok
 
-  assert_equal false, response_body["correct"]
-  assert_equal 0, response_body["points_awarded"]
+    submission = player.submissions.find_by!(question: question)
+
+    assert_equal player.id, submission.player_id
+    assert_equal question.id, submission.question_id
+    assert_equal question.round.id, submission.round_id
+    assert_equal "automatic_100_points", submission.answer
+
+    assert_in_delta 8_000, submission.response_time_ms, 100
+    assert_equal 100, submission.points_awarded
+
+    response_body = JSON.parse(response.body)
+    assert_equal "auto_submitted", response_body["status"]
+    assert_equal 100, response_body["points_awarded"]
+
+    player.reload
+    assert_equal 100, player.score
+    assert_not_includes player.power_ups, "automatic_100_points"
+    assert_nil player.active_power_up
+    assert_nil player.active_power_up_question_id
   end
 end

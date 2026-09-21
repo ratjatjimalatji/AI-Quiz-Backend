@@ -77,13 +77,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_17_175642) do
   end
 
   create_table "players", force: :cascade do |t|
+    t.string "active_power_up"
+    t.bigint "active_power_up_question_id"
     t.datetime "created_at", null: false
     t.boolean "eliminated", default: false
     t.integer "game_id"
+    t.string "power_ups", default: [], array: true
     t.integer "score", default: 0
     t.string "token"
     t.datetime "updated_at", null: false
     t.string "username"
+    t.index ["active_power_up_question_id"], name: "index_players_on_active_power_up_question_id"
     t.index ["game_id", "eliminated"], name: "index_players_on_game_id_and_eliminated"
     t.index ["game_id"], name: "index_players_on_game_id"
     t.index ["token"], name: "index_players_on_token", unique: true

@@ -5,9 +5,11 @@ one:
   score: 1
   eliminated: false
   game: one
+  power_ups: "{automatic_100_points,double_points,hide_half_wrong_answers}"
 
 two:
   username: "User2"
   score: 1
   eliminated: false
   game: one
+  power_ups: "{automatic_100_points,double_points,hide_half_wrong_answers}"
