@@ -9,15 +9,22 @@ class PlayerAdvancementServiceTest < ActiveSupport::TestCase
     assert_empty result
   end
 
-  test "advances the player with the highest score" do
+  test "advances half of the active players" do
     game = games(:one)
 
     player_one = players(:one)
     player_two = players(:two)
+    player_three = players(:three)
+    player_four = players(:four)
+
+    player_one.update!(score: 400)
+    player_two.update!(score: 300)
+    player_three.update!(score: 200)
+    player_four.update!(score: 100)
 
     result = PlayerAdvancementService.call(game)
 
-    assert_equal [ player_one ], result
+    assert_equal [ player_one, player_two ], result
   end
 
   test "does not consider already eliminated players" do
@@ -25,12 +32,20 @@ class PlayerAdvancementServiceTest < ActiveSupport::TestCase
 
     player_one = players(:one)
     player_two = players(:two)
+    player_three = players(:three)
+    player_four = players(:four)
+
+    player_one.update!(score: 400)
+    player_two.update!(score: 300)
+    player_three.update!(score: 200)
+    player_four.update!(score: 100)
 
     player_two.update!(eliminated: true)
 
     result = PlayerAdvancementService.call(game)
 
-    assert_equal [ player_one ], result
+    assert_equal [ player_one, player_three ], result
+
     assert_not player_one.reload.eliminated
     assert player_two.reload.eliminated
   end
@@ -39,24 +54,31 @@ class PlayerAdvancementServiceTest < ActiveSupport::TestCase
     game = games(:one)
 
     player_one = players(:one)
+
     players(:two).update!(eliminated: true)
+    players(:three).update!(eliminated: true)
+    players(:four).update!(eliminated: true)
 
     result = PlayerAdvancementService.call(game)
 
     assert_equal [ player_one ], result
   end
 
-  test "returns players ordered by score" do
+  test "advances the highest scoring half of the players" do
     game = games(:one)
 
     player_one = players(:one)
     player_two = players(:two)
+    player_three = players(:three)
+    player_four = players(:four)
 
     player_one.update!(score: 100)
-    player_two.update!(score: 200)
+    player_two.update!(score: 400)
+    player_three.update!(score: 300)
+    player_four.update!(score: 200)
 
     result = PlayerAdvancementService.call(game)
 
-    assert_equal [ player_two ], result
+    assert_equal [ player_two, player_three ], result
   end
 end

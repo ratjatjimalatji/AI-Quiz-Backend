@@ -17,16 +17,20 @@ class PlayerEliminationServiceTest < ActiveSupport::TestCase
 
     player_one = players(:one)
     player_two = players(:two)
+    player_three = players(:three)
+    player_four = players(:four)
 
     result = PlayerEliminationService.call(
       game: game,
-      advancing_players: [ player_one ]
+      advancing_players: [ player_one, player_two ]
     )
 
-    assert_equal [ player_two ], result
+    assert_equal [ player_three, player_four ], result
 
     assert_not player_one.reload.eliminated
-    assert player_two.reload.eliminated
+    assert_not player_two.reload.eliminated
+    assert player_three.reload.eliminated
+    assert player_four.reload.eliminated
   end
 
   test "does not eliminate advancing players" do
@@ -34,14 +38,18 @@ class PlayerEliminationServiceTest < ActiveSupport::TestCase
 
     player_one = players(:one)
     player_two = players(:two)
+    player_three = players(:three)
+    player_four = players(:four)
 
     PlayerEliminationService.call(
       game: game,
-      advancing_players: [ player_one ]
+      advancing_players: [ player_one, player_two ]
     )
 
     assert_not player_one.reload.eliminated
-    assert player_two.reload.eliminated
+    assert_not player_two.reload.eliminated
+    assert player_three.reload.eliminated
+    assert player_four.reload.eliminated
   end
 
   test "does not consider already eliminated players" do
@@ -49,17 +57,22 @@ class PlayerEliminationServiceTest < ActiveSupport::TestCase
 
     player_one = players(:one)
     player_two = players(:two)
+    player_three = players(:three)
+    player_four = players(:four)
 
-    player_two.update!(eliminated: true)
+    player_three.update!(eliminated: true)
 
     result = PlayerEliminationService.call(
       game: game,
-      advancing_players: [ player_one ]
+      advancing_players: [ player_one, player_two ]
     )
 
-    assert_empty result
+    assert_equal [ player_four ], result
+
     assert_not player_one.reload.eliminated
-    assert player_two.reload.eliminated
+    assert_not player_two.reload.eliminated
+    assert player_three.reload.eliminated
+    assert player_four.reload.eliminated
   end
 
   test "returns eliminated players" do
@@ -67,13 +80,15 @@ class PlayerEliminationServiceTest < ActiveSupport::TestCase
 
     player_one = players(:one)
     player_two = players(:two)
+    player_three = players(:three)
+    player_four = players(:four)
 
     result = PlayerEliminationService.call(
       game: game,
-      advancing_players: [ player_one ]
+      advancing_players: [ player_one, player_two ]
     )
 
     assert result.all? { |player| player.is_a?(Player) }
-    assert_equal [ player_two ], result
+    assert_equal [ player_three, player_four ], result
   end
 end
