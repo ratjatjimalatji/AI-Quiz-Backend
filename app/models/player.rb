@@ -6,7 +6,7 @@ class Player < ApplicationRecord
 POWER_UPS = %w[
     get_hundred_points
     double_points
-    hide_half_wrong_answers
+    glitch_sabotage
   ].freeze
 
   attribute :power_ups, :string, array: true, default: -> { POWER_UPS }
@@ -44,6 +44,14 @@ POWER_UPS = %w[
     power
   end
 
+  def show_active_opponents
+  opponents = current_player.game.players
+                            .where(eliminated: false)
+                            .where.not(id: current_player.id)
+                            .select(:id, :username)
+
+  render json: { players: opponents }
+  end
   private
 
   def game_state_allows_submission?
