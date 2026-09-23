@@ -6,51 +6,41 @@ class PowerUpsController < ApplicationController
     question = Question.find(power_up_params[:question_id])
     power_name = power_up_params[:power_name]
 
-    case power_name
+    result = case power_name
     when "glitch_sabotage"
-      result = PowerUps::GlitchSabotageService.call(
+      PowerUps::GlitchSabotageService.call(
         initiator: current_player,
         question: question,
-        victim_id: power_up_params[:target_player_id]
+        victim_id: power_up_params[:victim_player_id]
       )
 
-      if result[:success]
-        render json: { status: "sabotage_sent", target_player_id: result[:target_player].id }, status: :ok
-      else
-        render json: { error: result[:error] }, status: :unprocessable_entity
-      end
-
-    when "automatic_100_points"
-      result = PowerUps::AutoSubmit100Service.call(
+    when "get_hundred_points"
+      PowerUps::AutoSubmit100Service.call(
         player: current_player,
         question: question
       )
 
-      if result[:success]
-        render json: {
-          status: "auto_submitted",
-          submission: result[:submission],
-          points_awarded: result[:points_awarded]
-        }, status: :ok
-      else
-        render json: { error: result[:error] }, status: :unprocessable_entity
-      end
-
     when "double_points"
       if current_player.activate_deferred_power_up!(power_name, question)
-        render json: { status: "activated", active_power_up: power_name }, status: :ok
+        { success: true, data: { active_power_up: power_name } }
       else
-        render json: { error: "Unable to activate power-up" }, status: :unprocessable_entity
+        { success: false, error: "Unable to activate power-up" }
       end
 
     else
-      render json: { error: "Invalid power-up" }, status: :bad_request
+      return render json: { success: false, error: "Invalid power-up: #{power_name}" }, status: :bad_request
+    end
+
+    if result[:success]
+      render json: { success: true, power_name: power_name, data: result[:data] }, status: :ok
+    else
+      render json: { success: false, error: result[:error] }, status: :unprocessable_entity
     end
   end
 
   private
 
   def power_up_params
-    params.require(:power_up).permit(:question_id, :power_name, :target_player_id)
+    params.require(:power_up).permit(:question_id, :power_name, :victim_player_id)
   end
 end

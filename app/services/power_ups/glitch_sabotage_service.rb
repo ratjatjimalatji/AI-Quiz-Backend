@@ -14,42 +14,47 @@ module PowerUps
     end
 
     def call
-      target_player = @game.players.where(eliminated: false).find_by(id: @victim_id)
-      current_player = @game.players.find_by(id: @initiator.id)
-      validate!(target_player)
+      victim = @game.players.where(eliminated: false).find_by(id: @victim_id)
+      validate!(victim)
 
       ActiveRecord::Base.transaction do
-        # Deduct the power up from the inventory
         @initiator.power_ups = @initiator.power_ups - [ "glitch_sabotage" ]
         @initiator.save!
       end
 
-      broadcast_sabotage_event!
+      broadcast_sabotage_event!(victim)
 
-      { success: true, target_player: target_player, current_player: current_player, glitch_duration_ms: GLITCH_DURATION_MS }
+      {
+        success: true,
+        data: {
+        victim_player_id: victim.id,
+        glitch_duration_ms: GLITCH_DURATION_MS
+        }
+      }
     rescue StandardError => e
       { success: false, error: e.message }
     end
 
     private
 
-    def validate!
+    def validate!(victim)
       raise "Power-up not available" unless @initiator.power_ups.include?("glitch_sabotage")
       raise "Game is not accepting submissions" unless @game.status == "in_progress"
-      raise "Target player not found or eliminated" unless @game.players.where(elimated: false).exists?(id: @victim_id)
-      raise "Cannot sabotage yourself" if @initiator.id == @victim_id
+      raise "Target player not found or eliminated" if victim.nil?
+      raise "Cannot sabotage yourself" if @initiator.id == victim.id
     end
 
-    def broadcast_sabotage_event!
+    def broadcast_sabotage_event!(victim)
       ActionCable.server.broadcast(
         "game_room_#{@game.game_code}",
         {
-          event: "#{@initiator.username} used glitch sabotaged on #{@victim.username}",
+          event: "#{@initiator.username} used glitch sabotaged on #{victim.username}",
           initiator_id: @initiator.id,
           initiator_name: @initiator.username,
-          victim_id: @victim.id,
-          victim_name: @victim.username,
-          question_id: @question.id
+          victim_id: victim.id,
+          victim_name: victim.username,
+          question_id: @question.id,
+          glitch_duration_ms: GLITCH_DURATION_MS
         }
       )
     end
