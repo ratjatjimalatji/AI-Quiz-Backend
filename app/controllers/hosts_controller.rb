@@ -29,6 +29,8 @@ before_action :authenticate_host!, only: [ :create_game, :rejoin ]
       }
      )
 
+     render json: { id: game.id, code: game.game_code }, status: :created
+
   rescue ActiveRecord::RecordInvalid => e
   render json: { error: e.record.errors.full_messages }, status: :unprocessable_entity
   end
