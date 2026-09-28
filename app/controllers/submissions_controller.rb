@@ -5,9 +5,17 @@ class SubmissionsController < ApplicationController
     question = Question.find(submission_params[:question_id])
     game = current_player.game
 
-    if current_player.submissions.exists?(question_id: question.id)
-      return render json: { error: "Answer already submitted for this question" }, status: :unprocessable_entity
-    end
+  if current_player.eliminated
+    return render json: { error: I18n.t("submissions.player_eliminated") }, status: :forbidden
+  end
+
+  unless game.current_question_id == question.id
+    return render json: { error: I18n.t("submissions.question_no_longer_active") }, status: :unprocessable_entity
+  end
+
+  if current_player.submissions.exists?(question_id: question.id)
+    return render json: { error: I18n.t("submissions.answer_already_submitted") }, status: :unprocessable_entity
+  end
 
     response_time_ms =
       ((Time.current - game.question_started_at) * 1000).to_i
