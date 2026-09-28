@@ -24,5 +24,6 @@ Rails.application.routes.draw do
     post :rejoin, on: :collection
   end
   resources :submissions, only: [ :create ]
+
   post "power_ups/use", to: "power_ups#use"
 end
