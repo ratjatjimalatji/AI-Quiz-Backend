@@ -24,7 +24,12 @@ before_action :authenticate_player!, only: [ :rejoin ]
 
     render json: {
       success: true,
-      player: player.as_json(only: [ :id, :username, :score, :eliminated ]),
+      player:  {
+        id: player.id,
+        username: player.username,
+        score: player.score,
+        eliminated: player.eliminated
+      },
       game: {
         id: game.id,
         game_code: game.game_code,
