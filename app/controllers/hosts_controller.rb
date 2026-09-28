@@ -12,11 +12,6 @@ before_action :authenticate_host!, only: [ :create_game, :rejoin ]
   def create_game
     game = current_host.games.create!
 
-    puts "AUTH HEADER: #{request.headers["Authorization"].inspect}"
-    puts "PARAMS: #{params.inspect}"
-
-    if game.save
-
        ActionCable.server.broadcast(
       "game_room_#{game.game_code}",
       {
@@ -34,8 +29,10 @@ before_action :authenticate_host!, only: [ :create_game, :rejoin ]
       }
      )
 
-    render json: { id: game.id, code: game.game_code }, status: :created
-    end
+     render json: { id: game.id, code: game.game_code }, status: :created
+
+  rescue ActiveRecord::RecordInvalid => e
+  render json: { error: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
   def rejoin
