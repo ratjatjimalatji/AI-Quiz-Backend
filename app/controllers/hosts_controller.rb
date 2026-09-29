@@ -57,6 +57,7 @@ before_action :authenticate_host!, only: [ :create_game, :rejoin ]
         game_code: game.game_code,
         status: game.status,
         current_round_id: game.current_round_id,
+        current_question_id: game.current_question_id,
         players_count: game.players.count
       }
     }, status: :ok
