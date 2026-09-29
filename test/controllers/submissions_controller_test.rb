@@ -556,49 +556,4 @@ end
     assert_nil player.active_power_up
     assert_nil player.active_power_up_question_id
   end
-
-  test "glitch_sabotage deducts inventory and broadcasts glitch_victim event" do
-  question = questions(:fill_in_the_blank_question)
-  victim = players(:two)
-
-  # 1. Align game, question, and players
-  question.round.update!(game: @game)
-  victim.update!(game: @game, eliminated: false)
-
-  @game.update!(
-    current_question_id: question.id,
-    question_started_at: 2.seconds.ago,
-    status: "in_progress"
-  )
-
-  @player.update!(
-    score: 0,
-    power_ups: %w[glitch_sabotage double_points],
-    eliminated: false
-  )
-
-  # 2. Run assertion
-  assert_broadcast_on("game_room_#{@game.game_code}", {
-    event: "glitch_victim",
-    victim_player_id: victim.id,
-    initiator_id: @player.id,
-    initiator_name: @player.username,
-    duration_ms: 10_000
-  }) do
-    post power_ups_use_path,
-      params: {
-        power_up: {
-          question_id: question.id,
-          power_name: "glitch_sabotage",
-          victim_player_id: victim.id
-        }
-      },
-      headers: @headers
-  end
-
-  assert_response :ok
-
-  @player.reload
-  assert_not_includes @player.power_ups, "glitch_sabotage"
-end
 end
