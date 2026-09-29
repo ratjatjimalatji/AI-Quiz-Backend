@@ -14,7 +14,8 @@ class GamesController < ApplicationController
  def advance_step
   game = current_host.games.includes(current_question: :options).find(params[:id])
 
-  if game.advance_step!
+  begin
+   game.advance_step!
     payload = {
       event: "game_state_changed",
       game_id: game.id,
@@ -30,8 +31,9 @@ class GamesController < ApplicationController
     )
 
     render json: payload, status: :ok
-  else
-    render json: { error: "Unable to advance game state" },
+
+  rescue StandardError => e
+    render json: { error: e.message },
            status: :unprocessable_entity
   end
  end
@@ -40,11 +42,16 @@ class GamesController < ApplicationController
     game_code = params[:game_code]
 
     if game_code.blank?
-      render json: { error: "game_code is required" }, status: :bad_request
+      render json: { error:  I18n.t("activerecord.errors.models.game.attributes.game_code.blank") }, status: :bad_request
       return
     end
 
     game = Game.find_by(game_code: game_code)
+
+    unless game
+      render json: { error: I18n.t("errors.game.not_found") }, status: :not_found
+      return
+    end
 
     if game.players_count >= game.player_limit
       render json: {
