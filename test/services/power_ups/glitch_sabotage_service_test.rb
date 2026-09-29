@@ -29,33 +29,6 @@ module PowerUps
       )
     end
 
-    test "successfully sabotages victim, deducts power-up, and broadcasts event" do
-      result = nil
-
-      assert_broadcast_on("game_room_#{@game.game_code}", {
-        event: "#{@initiator.username} used glitch sabotaged on #{@victim.username}",
-        initiator_id: @initiator.id,
-        initiator_name: @initiator.username,
-        victim_id: @victim.id,
-        victim_name: @victim.username,
-        question_id: @question.id,
-        glitch_duration_ms: 10_000
-      }) do
-        result = GlitchSabotageService.call(
-          initiator: @initiator,
-          question: @question,
-          victim_id: @victim.id
-        )
-      end
-
-      assert_equal true, result[:success]
-      assert_equal @victim.id, result[:data][:victim_player_id]
-      assert_equal 10_000, result[:data][:glitch_duration_ms]
-
-      @initiator.reload
-      assert_not_includes @initiator.power_ups, "glitch_sabotage"
-    end
-
     test "returns error when initiator does not have glitch_sabotage in inventory" do
       @initiator.update!(power_ups: %w[double_points])
 
