@@ -10,7 +10,6 @@ POWER_UPS = %w[
   ].freeze
 
   attribute :power_ups, :string, array: true, default: -> { POWER_UPS }
-
   validates :username, presence: true
   validates :username, uniqueness: { scope: :game_id }
 
@@ -44,14 +43,6 @@ POWER_UPS = %w[
     power
   end
 
-  def show_active_opponents
-  opponents = current_player.game.players
-                            .where(eliminated: false)
-                            .where.not(id: current_player.id)
-                            .select(:id, :username)
-
-  render json: { players: opponents }
-  end
   private
 
   def game_state_allows_submission?

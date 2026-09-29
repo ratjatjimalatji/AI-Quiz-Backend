@@ -27,6 +27,7 @@ module PowerUps
       {
         success: true,
         data: {
+        question_id: @question.id,
         victim_player_id: victim.id,
         glitch_duration_ms: GLITCH_DURATION_MS
         }
@@ -48,7 +49,7 @@ module PowerUps
       ActionCable.server.broadcast(
         "game_room_#{@game.game_code}",
         {
-          event: "#{@initiator.username} used glitch sabotaged on #{victim.username}",
+          event: "glitch_attack",
           initiator_id: @initiator.id,
           initiator_name: @initiator.username,
           victim_id: victim.id,
