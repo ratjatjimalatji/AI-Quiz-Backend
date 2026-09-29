@@ -38,6 +38,11 @@ en:
         bad_request: "The request was invalid."
         server_error: "Something went wrong on the server."
 
+  submissions:
+    player_eliminated: "You have been eliminated"
+    question_no_longer_active: "That question is no longer active"
+    answer_already_submitted: "Answer already submitted for this question"
+
   activerecord:
     errors:
       models:

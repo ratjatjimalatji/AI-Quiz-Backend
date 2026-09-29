@@ -20,18 +20,21 @@ class RoundResultsService
 
     winner = remaining_players.one? ? remaining_players.first : nil
 
+    finalists = remaining_players.count == 2 ? remaining_players : []
+
     players = @game.players.order(score: :desc)
 
-    broadcast_results(players, winner)
+    broadcast_results(players, winner, finalists)
     {
       players: players,
-      winner: winner
+      winner: winner,
+      finalists: finalists
     }
   end
 
   private
 
-  def broadcast_results(players, winner)
+  def broadcast_results(players, winner, finalists)
     ActionCable.server.broadcast(
       "game_room_#{@game.game_code}",
       {
@@ -52,7 +55,14 @@ class RoundResultsService
           id: winner.id,
           username: winner.username,
           score: winner.score
-        }
+        },
+        finalists: finalists.map do |player|
+          {
+            id: player.id,
+            username: player.username,
+            score: player.score
+          }
+        end
       }
     )
   end

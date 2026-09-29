@@ -7,6 +7,19 @@ class PowerUpsController < ApplicationController
     power_name = power_up_params[:power_name]
 
     case power_name
+    when "glitch_sabotage"
+      result = PowerUps::GlitchSabotageService.call(
+        initiator: current_player,
+        question: question,
+        victim_id: power_up_params[:target_player_id]
+      )
+
+      if result[:success]
+        render json: { status: "sabotage_sent", target_player_id: result[:target_player].id }, status: :ok
+      else
+        render json: { error: result[:error] }, status: :unprocessable_entity
+      end
+
     when "automatic_100_points"
       result = PowerUps::AutoSubmit100Service.call(
         player: current_player,
@@ -38,6 +51,6 @@ class PowerUpsController < ApplicationController
   private
 
   def power_up_params
-    params.require(:power_up).permit(:question_id, :power_name)
+    params.require(:power_up).permit(:question_id, :power_name, :target_player_id)
   end
 end
