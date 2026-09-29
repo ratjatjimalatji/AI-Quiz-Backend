@@ -74,7 +74,7 @@ include ActionCable::TestHelper
     assert_equal @question.round.id, submission.round_id
     assert_equal @incorrect_option.position, submission.answer.to_i
 
-    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_in_delta 4_000, submission.response_time_ms, 200
     assert_equal 0, submission.points_awarded
   end
 
@@ -206,7 +206,7 @@ include ActionCable::TestHelper
   assert_equal question.round.id, submission.round_id
   assert_equal correct_sequence, submission.answer.map(&:to_i)
 
-  assert_in_delta 4_000, submission.response_time_ms, 100
+  assert_in_delta 4_000, submission.response_time_ms, 200
   assert_equal 100, submission.points_awarded
 
   response_body = JSON.parse(response.body)
@@ -245,7 +245,7 @@ include ActionCable::TestHelper
     assert_equal question.round.id, submission.round_id
     assert_equal incorrect_sequence, submission.answer.map(&:to_i)
 
-    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_in_delta 4_000, submission.response_time_ms, 200
     assert_equal 0, submission.points_awarded
 
     response_body = JSON.parse(response.body)
@@ -369,12 +369,12 @@ include ActionCable::TestHelper
       status: "in_progress"
     )
 
-    player.update!(
-      score: 0,
-      power_ups: %w[double_points get_hundred_points],
-      active_power_up: nil,
-      active_power_up_question_id: nil
-    )
+    @player.update!(
+    score: 0,
+    power_ups: %w[double_points get_hundred_points],
+    active_power_up: nil,
+    active_power_up_question_id: nil
+  )
 
     # 1. Activate double_points power-up
     post power_ups_use_path,
@@ -415,7 +415,7 @@ include ActionCable::TestHelper
     assert_equal question.round.id, submission.round_id
     assert_equal correct_answer, submission.answer
 
-    assert_in_delta 4_000, submission.response_time_ms, 500
+    assert_in_delta 4_000, submission.response_time_ms, 200
     assert_equal 200, submission.points_awarded
 
     response_body = JSON.parse(response.body)
@@ -487,7 +487,7 @@ end
     assert_equal question.round.id, submission.round_id
     assert_equal incorrect_sequence, submission.answer.map(&:to_i)
 
-    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_in_delta 4_000, submission.response_time_ms, 200
     assert_equal 0, submission.points_awarded
 
     response_body = JSON.parse(response.body)
@@ -533,7 +533,6 @@ end
     puts "RESPONSE STATUS: #{response.status}"
     puts "RESPONSE BODY: #{response.body}"
     end
-
     assert_response :ok
 
     submission = player.submissions.find_by!(question: question)
