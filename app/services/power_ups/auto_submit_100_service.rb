@@ -12,14 +12,16 @@ module PowerUps
     end
 
     def call
-      validate!
+      validate_get_hundred_points!
 
       submission = nil
       response_time_ms = ((Time.current - @game.question_started_at) * 1000).to_i
 
+      used_power = (@player.power_ups & %w[get_hundred_points automatic_100_points]).first || "get_hundred_points"
+
       ActiveRecord::Base.transaction do
         # Deduct the power up from the inventory
-        @player.power_ups = @player.power_ups - [ "automatic_100_points" ]
+        @player.power_ups = @player.power_ups - [ "get_hundred_points" ]
         @player.increment!(:score, 100)
         @player.save!
 
@@ -27,7 +29,7 @@ module PowerUps
         submission = @player.submissions.create!(
           question: @question,
           round: @question.round,
-          answer: "automatic_100_points",
+          answer: "get_hundred_points",
           response_time_ms: response_time_ms,
           points_awarded: 100
         )
@@ -35,16 +37,21 @@ module PowerUps
 
       broadcast_submission!
 
-      { success: true, submission: submission, points_awarded: 100 }
+      {
+      success: true,
+      data: {
+        submission: submission,
+        points_awarded: 100 }
+    }
     rescue StandardError => e
       { success: false, error: e.message }
     end
 
     private
 
-    def validate!
+    def validate_get_hundred_points!
       raise "Game is not accepting submissions" unless @game.status == "in_progress" # or your check: game.active_for_answers?
-      raise "Power-up not available" unless @player.power_ups.include?("automatic_100_points")
+      raise "Power-up not available" unless (@player.power_ups & %w[get_hundred_points]).any?
       raise "Question already answered" if @player.submissions.exists?(question_id: @question.id)
     end
 

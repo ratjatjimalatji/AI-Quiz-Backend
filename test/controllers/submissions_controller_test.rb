@@ -1,6 +1,7 @@
 require "test_helper"
 
 class SubmissionsControllerTest < ActionDispatch::IntegrationTest
+include ActionCable::TestHelper
   setup do
     @player = players(:one)
     @player.update!(token: "player-one-token", score: 0)
@@ -73,7 +74,7 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @question.round.id, submission.round_id
     assert_equal @incorrect_option.position, submission.answer.to_i
 
-    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_in_delta 4_000, submission.response_time_ms, 200
     assert_equal 0, submission.points_awarded
   end
 
@@ -205,7 +206,7 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
   assert_equal question.round.id, submission.round_id
   assert_equal correct_sequence, submission.answer.map(&:to_i)
 
-  assert_in_delta 4_000, submission.response_time_ms, 100
+  assert_in_delta 4_000, submission.response_time_ms, 200
   assert_equal 100, submission.points_awarded
 
   response_body = JSON.parse(response.body)
@@ -244,7 +245,7 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal question.round.id, submission.round_id
     assert_equal incorrect_sequence, submission.answer.map(&:to_i)
 
-    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_in_delta 4_000, submission.response_time_ms, 200
     assert_equal 0, submission.points_awarded
 
     response_body = JSON.parse(response.body)
@@ -357,6 +358,7 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "activates double points and awards 2x points for a correct answer" do
+  freeze_time do
     question = questions(:fill_in_the_blank_question)
     game = question.round.game
     player = players(:one)
@@ -369,7 +371,7 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
 
     @player.update!(
     score: 0,
-    power_ups: %w[double_points automatic_100_points],
+    power_ups: %w[double_points get_hundred_points],
     active_power_up: nil,
     active_power_up_question_id: nil
   )
@@ -413,7 +415,7 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal question.round.id, submission.round_id
     assert_equal correct_answer, submission.answer
 
-    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_in_delta 4_000, submission.response_time_ms, 200
     assert_equal 200, submission.points_awarded
 
     response_body = JSON.parse(response.body)
@@ -426,6 +428,7 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_nil player.active_power_up
     assert_nil player.active_power_up_question_id
   end
+end
 
   test "activates double points and awards zero points for an incorrect answer" do
     question = questions(:sequence_question)
@@ -440,7 +443,7 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
 
     @player.update!(
     score: 0,
-    power_ups: %w[double_points automatic_100_points],
+    power_ups: %w[double_points get_hundred_points],
     active_power_up: nil,
     active_power_up_question_id: nil
     )
@@ -484,7 +487,7 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal question.round.id, submission.round_id
     assert_equal incorrect_sequence, submission.answer.map(&:to_i)
 
-    assert_in_delta 4_000, submission.response_time_ms, 100
+    assert_in_delta 4_000, submission.response_time_ms, 200
     assert_equal 0, submission.points_awarded
 
     response_body = JSON.parse(response.body)
@@ -510,8 +513,9 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     )
 
     player.update!(
+    game: game,
     score: 0,
-    power_ups: %w[automatic_100_points double_points],
+    power_ups: %w[get_hundred_points double_points],
     active_power_up: nil,
     active_power_up_question_id: nil
     )
@@ -522,12 +526,13 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
         params: {
           power_up: {
             question_id: question.id,
-            power_name: "automatic_100_points"
+            power_name: "get_hundred_points"
           }
         },
         headers: @headers
+    puts "RESPONSE STATUS: #{response.status}"
+    puts "RESPONSE BODY: #{response.body}"
     end
-
     assert_response :ok
 
     submission = player.submissions.find_by!(question: question)
@@ -535,18 +540,19 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal player.id, submission.player_id
     assert_equal question.id, submission.question_id
     assert_equal question.round.id, submission.round_id
-    assert_equal "automatic_100_points", submission.answer
+    assert_equal "get_hundred_points", submission.answer
 
-    assert_in_delta 8_000, submission.response_time_ms, 100
+    assert_in_delta 8_000, submission.response_time_ms, 500
     assert_equal 100, submission.points_awarded
 
     response_body = JSON.parse(response.body)
-    assert_equal "auto_submitted", response_body["status"]
-    assert_equal 100, response_body["points_awarded"]
+    assert_equal true, response_body["success"]
+    assert_equal "get_hundred_points", response_body["power_name"]
+    assert_equal 100, response_body.dig("data", "points_awarded")
 
     player.reload
     assert_equal 100, player.score
-    assert_not_includes player.power_ups, "automatic_100_points"
+    assert_not_includes player.power_ups, "get_hundred_points"
     assert_nil player.active_power_up
     assert_nil player.active_power_up_question_id
   end

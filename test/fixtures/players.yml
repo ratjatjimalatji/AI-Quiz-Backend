@@ -5,25 +5,25 @@ one:
   score: 1
   eliminated: false
   game: one
-  power_ups: "{automatic_100_points,double_points,hide_half_wrong_answers}"
+  power_ups: "{get_hundred_points,double_points,glitch_sabotage}"
 
 two:
   username: "User2"
   score: 1
   eliminated: false
   game: one
-  power_ups: "{automatic_100_points,double_points,hide_half_wrong_answers}"
+  power_ups: "{get_hundred_points,double_points,hide_half_wrong_answers}"
 
 three:
   username: "User3"
   score: 1
   eliminated: false
   game: one
-  power_ups: "{automatic_100_points,double_points,hide_half_wrong_answers}"
+  power_ups: "{get_hundred_points,double_points,hide_half_wrong_answers}"
 
 four:
   username: "User4"
   score: 1
   eliminated: false
   game: one
-  power_ups: "{automatic_100_points,double_points,hide_half_wrong_answers}"
+  power_ups: "{get_hundred_points,double_points,hide_half_wrong_answers}"

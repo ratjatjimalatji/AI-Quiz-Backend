@@ -52,6 +52,7 @@ class SubmissionsController < ApplicationController
         event: "answer_submitted",
         player_id: current_player.id,
         player_name: current_player.username,
+        power_ups: current_player.power_ups,
         question_id: question.id,
         players_submitted: submission_count,
         total_players: game.players.where(eliminated: false).count
