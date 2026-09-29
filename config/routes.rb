@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   resources :games, only: [ :index ] do
     post :create_player, on: :collection
     post :advance_step, on: :member
-    get :get_players, on: :collection
+    get :get_players, to: "games#get_players"
   end
 
   resources :questions, only: [ :index, :create, :show, :update ]
