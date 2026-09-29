@@ -36,6 +36,8 @@ before_action :authenticate_host!, only: [ :create_game, :rejoin ]
 
     render json: { id: game.id, code: game.game_code }, status: :created
     end
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   def rejoin
