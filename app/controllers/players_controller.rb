@@ -34,7 +34,8 @@ before_action :authenticate_player!, only: [ :rejoin ]
         id: game.id,
         game_code: game.game_code,
         status: game.status,
-        current_round_id: game.current_round_id
+        current_round_id: game.current_round_id,
+        current_question_id: game.current_question_id
       }
     }, status: :ok
   end
