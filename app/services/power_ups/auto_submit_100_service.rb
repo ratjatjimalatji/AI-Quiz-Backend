@@ -41,7 +41,9 @@ module PowerUps
       success: true,
       data: {
         submission: submission,
-        points_awarded: 100 }
+        points_awarded: 100,
+        correct: true
+        }
     }
     rescue StandardError => e
       { success: false, error: e.message }
