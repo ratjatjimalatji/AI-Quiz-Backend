@@ -17,6 +17,7 @@ class Game < ApplicationRecord
     waiting: "waiting",
     in_progress: "in_progress",
     question_review: "question_review",
+    leaderboard: "leaderboard",
     round_summary: "round_summary",
     completed: "completed"
   }, default: :waiting
@@ -39,51 +40,67 @@ class Game < ApplicationRecord
 
       # 2. Question transitions to review after all players have submitted their answers
       if in_progress?
-        #   QuestionTransitionService.call(self)
-        #   return true
-        # end
-
-        # # 3. If currently reviewing a question, decide next destination
-        # if question_review?
-        next_question = go_to_next_question(current_question)
-
-        if next_question.present?
-          # Next question in the current round
-          transition_to!(round: current_round, question: next_question, status: :in_progress)
+        if should_show_leaderboard?
+          DisplayLeaderboardService.call(game: self, current_round: current_round, current_question: current_question)
+          update!(status: :leaderboard)
           return true
         end
-
-        # No more questions in round; check for next round
-        next_round = go_to_next_round(current_round)
-
-        if next_round.present?
-          RoundTransitionService.call(self)
-          return true
-        else
-          complete_game!
-          return true
-        end
+        return advance_to_next_content!
       end
 
-      # 4. If on round summary, transition to the first question of the next round
+      if leaderboard?
+        return advance_to_next_content!
+      end
+
       if round_summary?
-        next_round = go_to_next_round(current_round)
-
-        if next_round.present?
-          first_q = next_round.questions.order(Arel.sql("COALESCE(position, 0) ASC"), :id).first
-          transition_to!(round: next_round, question: first_q, status: :in_progress)
-          return true
-        else
-          complete_game!
-          return true
-        end
+        return start_next_round!
       end
-
-      false
     end
+    false
+  end
+
+  def questions_shown_count
+    Question.joins(:round).where(rounds: { game_id: id }).where.not(shown_at: nil).count
+  end
+
+  # Checks if we just finished an even-numbered question batch
+  def should_show_leaderboard?
+    count = questions_shown_count
+    count.positive? && (count % 2).zero?
   end
 
   private
+
+  def advance_to_next_content!
+    next_question = go_to_next_question(current_question)
+
+    if next_question.present?
+      transition_to!(round: current_round, question: next_question, status: :in_progress)
+      true
+    else
+      next_round = go_to_next_round(current_round)
+      if next_round.present?
+        RoundTransitionService.call(self)
+        true
+      else
+        complete_game!
+        true
+      end
+    end
+  end
+
+  def start_next_round!
+    next_round = go_to_next_round(current_round)
+
+    if next_round.present?
+      first_q = next_round.questions.order(Arel.sql("COALESCE(position, 0) ASC"), :id).first
+      transition_to!(round: next_round, question: first_q, status: :in_progress)
+      true
+    else
+      complete_game!
+      true
+    end
+  end
 
   def transition_to!(round:, question:, status: self.status)
     now = Time.current
