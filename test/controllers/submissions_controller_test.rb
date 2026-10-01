@@ -101,7 +101,7 @@ include ActionCable::TestHelper
 
     assert_equal @correct_option.position, submission.answer.to_i
     assert_in_delta 7_000, submission.response_time_ms, 100
-    assert_equal 98, submission.points_awarded
+    assert_equal 96, submission.points_awarded
   end
 
   test "does not accept response time from the request" do
@@ -127,7 +127,7 @@ include ActionCable::TestHelper
     submission = @player.submissions.find_by!(question: @question)
 
     assert_in_delta 7_000, submission.response_time_ms, 100
-    assert_equal 98, submission.points_awarded
+    assert_equal 96, submission.points_awarded
   end
 
   test "returns correctness and points awarded for a correct answer" do

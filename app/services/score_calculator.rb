@@ -4,7 +4,7 @@ class ScoreCalculator
     @response_time_ms = response_time_ms
 
     @base_score = 100
-    @points_lost_per_interval = 1
+    @points_lost_per_interval = 2
     @free_time_ms = 5_000
     @interval_ms = 1_000
     @min_score = 75
