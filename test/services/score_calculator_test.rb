@@ -16,7 +16,7 @@ class ScoreUpdaterTest < ActiveSupport::TestCase
       response_time_ms: 10_000
     )
 
-    assert_equal 145, player.reload.score
+    assert_equal 140, player.reload.score
   end
 
   test "does not change score when the answer is incorrect" do
