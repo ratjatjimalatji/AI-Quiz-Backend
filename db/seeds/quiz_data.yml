@@ -49,7 +49,7 @@ rounds:
       - id: 103
         title: "In modern agentic coding frameworks, which file acts as an open specification to package specialized capabilities, step-by-step instructions, and contextual workflows loaded dynamically by the agent?"
         question_type: "single_choice"
-        correct_option_position: [2]
+        correct_option_positions: [2]
         options:
           - id: 5001
             question_id: 103
