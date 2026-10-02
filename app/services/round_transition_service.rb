@@ -25,6 +25,7 @@ class RoundTransitionService
       }
     )
 
+    @game.players.where(eliminated: false).update_all(power_ups: Player::POWER_UPS)
     elimination_result = RoundResultsService.call(game: @game, current_round: @round)
 
   {
