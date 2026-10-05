@@ -2,11 +2,13 @@
 one:
   title: General Knowledge
   game: one
+  position: 1
 
 two:
   title: Final Challenge
-  game: two
+  game: one
+  position: 2
 
 template_round:
   title: Template Round
-  position: 1
+  position: 3

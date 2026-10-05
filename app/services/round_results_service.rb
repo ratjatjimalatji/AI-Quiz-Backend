@@ -17,6 +17,11 @@ class RoundResultsService
     )
 
     remaining_players = @game.players.where(eliminated: false)
+    remaining_players.update_all(
+    power_ups: Player::POWER_UPS.dup,
+    active_power_up: nil,
+    active_power_up_question_id: nil
+    )
 
     winner = remaining_players.one? ? remaining_players.first : nil
 

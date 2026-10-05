@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/mock"
 
 class PowerUpsControllerTest < ActionDispatch::IntegrationTest
   include ActionCable::TestHelper
@@ -30,11 +31,23 @@ class PowerUpsControllerTest < ActionDispatch::IntegrationTest
 
     @game.update!(
       current_question_id: @question.id,
+      current_round: rounds(:one),
       question_started_at: 2.seconds.ago,
       status: "in_progress"
     )
 
     @headers = { "Authorization" => "Bearer #{@player.token}" }
+  end
+
+  def transition_with_player_advancing
+    advancing = Player.where(id: @player.id)
+    original  = PlayerAdvancementService.method(:call)
+
+    PlayerAdvancementService.define_singleton_method(:call) { |*_args, **_kwargs| advancing }
+
+    RoundTransitionService.call(@game)
+  ensure
+    PlayerAdvancementService.define_singleton_method(:call, original) if original
   end
 
   test "use get_hundred_points creates submission, increments score, and deducts inventory" do
@@ -69,6 +82,58 @@ class PowerUpsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "get_hundred_points", submission.answer
   end
 
+  test "power-ups are spent during a round and fully restored for survivors at the next round" do
+    assert_not_nil @game.reload.current_round, "game needs a current_round"
+    assert_equal @game.id, @player.game_id, "player must belong to @game"
+
+    # 1. Start of the round: full set
+    assert_equal Player::POWER_UPS.sort, @player.reload.power_ups.sort
+
+    # 2. Spend one during the round
+    assert_difference("Submission.count", 1) do
+      post power_ups_use_path,
+          params: { power_up: { question_id: @question.id, power_name: "get_hundred_points" } },
+          headers: @headers
+    end
+  assert_response :ok
+
+  @player.reload
+  assert_not_includes @player.power_ups, "get_hundred_points"
+  assert_equal %w[double_points glitch_sabotage].sort, @player.power_ups.sort
+
+  # 3. Transition to the next round (only @player advances)
+  transition_with_player_advancing
+
+  @player.reload
+  assert_equal false, @player.eliminated, "player must survive for the reset to apply"
+  assert_equal Player::POWER_UPS.sort, @player.power_ups.sort
+end
+
+test "a pending active power-up is cleared when the next round starts" do
+  @player.update!(
+    power_ups: Player::POWER_UPS - [ "double_points" ],
+    active_power_up: "double_points",
+    active_power_up_question_id: @question.id
+  )
+
+  transition_with_player_advancing
+
+  @player.reload
+  assert_equal false, @player.eliminated
+  assert_equal Player::POWER_UPS.sort, @player.power_ups.sort
+  assert_nil @player.active_power_up
+  assert_nil @player.active_power_up_question_id
+end
+
+test "eliminated players do not get their power-ups restored" do
+  @victim.update!(power_ups: %w[double_points])
+
+  transition_with_player_advancing
+
+  @victim.reload
+  assert_equal true, @victim.eliminated, "victim should be eliminated when not advancing"
+  assert_equal %w[double_points], @victim.power_ups
+end
   test "use glitch_sabotage deducts inventory, broadcasts ActionCable event, and returns 200" do
     assert_broadcast_on("game_room_#{@game.game_code}", {
       event: "glitch_attack",
