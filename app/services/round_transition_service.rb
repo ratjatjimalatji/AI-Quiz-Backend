@@ -9,12 +9,23 @@ class RoundTransitionService
   end
 
   def process
-    # 1. Put the game into the summary state
+    result = nil
+
+    ActiveRecord::Base.transaction do
     @game.update!(
       status: :round_summary,
       current_question: nil,
       question_started_at: nil
     )
+
+    result = RoundResultsService.call(game: @game, current_round: @round)
+
+    @game.players.reload.where(eliminated: false).update_all(
+        power_ups: Player::POWER_UPS.dup,
+        active_power_up: nil,
+        active_power_up_question_id: nil
+      )
+    end
 
     ActionCable.server.broadcast(
       "game_room_#{@game.game_code}",
@@ -25,12 +36,9 @@ class RoundTransitionService
       }
     )
 
-    @game.players.where(eliminated: false).update_all(power_ups: Player::POWER_UPS)
-    elimination_result = RoundResultsService.call(game: @game, current_round: @round)
-
   {
-    advancing: elimination_result[:advancing],
-    eliminated: elimination_result[:eliminated]
+    advancing: result[:advancing],
+    eliminated: result[:eliminated]
   }
   end
 end
