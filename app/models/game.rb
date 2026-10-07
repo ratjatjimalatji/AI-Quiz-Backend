@@ -53,6 +53,7 @@ class Game < ApplicationRecord
       end
 
       if round_summary?
+        DisplayLeaderboardService.call(game: self, current_round: current_round, current_question: current_question)
         return start_next_round!
       end
     end
@@ -66,7 +67,7 @@ class Game < ApplicationRecord
   # Checks if we just finished an even-numbered question batch
   def should_show_leaderboard?
     count = questions_shown_count
-    count.positive? && (count % 4).zero? && (count % 10).nonzero?
+    count.positive? && (count % 4).zero? or (count % 20).zero?
   end
 
   private
