@@ -53,6 +53,7 @@ class Game < ApplicationRecord
       end
 
       if round_summary?
+        DisplayLeaderboardService.call(game: self, current_round: current_round, current_question: current_question)
         return start_next_round!
       end
     end
