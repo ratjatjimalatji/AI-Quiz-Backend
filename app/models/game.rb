@@ -67,7 +67,7 @@ class Game < ApplicationRecord
   # Checks if we just finished an even-numbered question batch
   def should_show_leaderboard?
     count = questions_shown_count
-    count.positive? && (count % 4).zero? or (count % 20).zero?
+    count.positive? && ((count % 4).zero? || (count % 10).zero?)
   end
 
   private
