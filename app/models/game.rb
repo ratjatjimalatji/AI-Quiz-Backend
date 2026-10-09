@@ -50,10 +50,6 @@ class Game < ApplicationRecord
         return advance_to_next_content!
       end
 
-      if leaderboard?
-        return advance_to_next_content!
-      end
-
       if round_summary?
         show_leaderboard!
         return start_next_round!
@@ -76,7 +72,6 @@ class Game < ApplicationRecord
 
   def show_leaderboard!
   DisplayLeaderboardService.call(game: self, current_round: current_round, current_question: current_question)
-  update!(status: :round_summary)
   end
 
   def advance_to_next_content!
