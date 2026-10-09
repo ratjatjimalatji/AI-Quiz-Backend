@@ -40,11 +40,13 @@ class Game < ApplicationRecord
 
       # 2. Question transitions to review after all players have submitted their answers
       if in_progress?
+        return show_leaderboard! if last_question_of_round?
+
         if should_show_leaderboard?
-          DisplayLeaderboardService.call(game: self, current_round: current_round, current_question: current_question)
-          update!(status: :leaderboard)
+          show_leaderboard!
           return true
         end
+
         return advance_to_next_content!
       end
 
@@ -53,24 +55,29 @@ class Game < ApplicationRecord
       end
 
       if round_summary?
-        DisplayLeaderboardService.call(game: self, current_round: current_round, current_question: current_question)
+        show_leaderboard!
         return start_next_round!
       end
     end
     false
   end
 
-  def questions_shown_count
-    Question.joins(:round).where(rounds: { game_id: id }).where.not(shown_at: nil).count
-  end
-
   # Checks if we just finished an even-numbered question batch
   def should_show_leaderboard?
-    count = questions_shown_count
-    count.positive? && ((count % 4).zero? || (count % 10).zero?)
+    count = current_round.questions.where.not(shown_at: nil).count
+    count.positive? && (count % 4).zero?
+  end
+
+  def last_question_of_round?
+  current_question.present? && go_to_next_question(current_question).nil?
   end
 
   private
+
+  def show_leaderboard!
+  DisplayLeaderboardService.call(game: self, current_round: current_round, current_question: current_question)
+  update!(status: :round_summary)
+  end
 
   def advance_to_next_content!
     next_question = go_to_next_question(current_question)
@@ -79,6 +86,7 @@ class Game < ApplicationRecord
       transition_to!(round: current_round, question: next_question, status: :in_progress)
       true
     else
+      show_leaderboard!
       next_round = go_to_next_round(current_round)
       if next_round.present?
         RoundTransitionService.call(self)
