@@ -1,4 +1,7 @@
 class Game < ApplicationRecord
+  # The leaderboard is shown after this question number within a round.
+  LEADERBOARD_QUESTION_FREQUENCY_NUMBER = 4
+
   before_validation :generate_game_code, on: :create
 
   belongs_to :host, class_name: "Host"
@@ -23,87 +26,100 @@ class Game < ApplicationRecord
   }, default: :waiting
 
   def advance_step!
-    with_lock do
-      return false if completed?
-
-      # 1. Start game if waiting or current_round not set
-      if waiting? || current_round.nil?
-        first_round = rounds.order(Arel.sql("COALESCE(position, 0) ASC"), :id).first
-        return false unless first_round
-
-        first_question = first_round.questions.order(Arel.sql("COALESCE(position, 0) ASC"), :id).first
-        return false unless first_question
-
-        transition_to!(round: first_round, question: first_question, status: :in_progress)
-        return true
-      end
-
-      # 2. Question transitions to review after all players have submitted their answers
-      if in_progress?
-        return show_leaderboard! if last_question_of_round?
-
-        if should_show_leaderboard?
-          show_leaderboard!
-          return true
-        end
-
-        return advance_to_next_content!
-      end
-
-      if round_summary?
-        show_leaderboard!
-        return start_next_round!
-      end
-    end
-    false
+    with_lock { perform_advance! }
   end
 
-  # Checks if we just finished an even-numbered question batch
   def should_show_leaderboard?
-    count = current_round.questions.where.not(shown_at: nil).count
-    count.positive? && (count % 4).zero?
+    question_number_in_round % LEADERBOARD_QUESTION_FREQUENCY_NUMBER.zero?
   end
 
   def last_question_of_round?
-  current_question.present? && go_to_next_question(current_question).nil?
+    current_question.present? && go_to_next_question(current_question).nil?
   end
 
   private
 
-  def show_leaderboard!
-  DisplayLeaderboardService.call(game: self, current_round: current_round, current_question: current_question)
+  def perform_advance!
+    return false if completed?
+    return start_game! if waiting? || current_round.nil?
+
+    case status
+    when "in_progress"
+      advance_from_question!
+    when "leaderboard"
+      advance_from_leaderboard!
+    when "round_summary"
+      start_next_round!
+    else
+      false
+    end
   end
 
-  def advance_to_next_content!
-    next_question = go_to_next_question(current_question)
+  def start_game!
+    first_round = ordered_rounds.first
+    return false unless first_round
 
-    if next_question.present?
-      transition_to!(round: current_round, question: next_question, status: :in_progress)
-      true
+    first_question = ordered_questions(first_round).first
+    return false unless first_question
+
+    transition_to!(round: first_round, question: first_question, status: :in_progress)
+    true
+  end
+
+  def advance_from_question!
+    return false if current_question.nil?
+
+    if last_question_of_round?
+      display_leaderboard!(:round_summary)
+    elsif should_show_leaderboard?
+      display_leaderboard!(:leaderboard)
     else
-      show_leaderboard!
-      next_round = go_to_next_round(current_round)
-      if next_round.present?
-        RoundTransitionService.call(self)
-        true
-      else
-        complete_game!
-        true
-      end
+      advance_to_next_question!
     end
+  end
+
+  def advance_from_leaderboard!
+    last_question_of_round? ? start_next_round! : advance_to_next_question!
+  end
+
+  def advance_to_next_question!
+    next_question = go_to_next_question(current_question)
+    return false unless next_question
+
+    transition_to!(round: current_round, question: next_question, status: :in_progress)
+    true
   end
 
   def start_next_round!
     next_round = go_to_next_round(current_round)
 
     if next_round.present?
-      first_q = next_round.questions.order(Arel.sql("COALESCE(position, 0) ASC"), :id).first
-      transition_to!(round: next_round, question: first_q, status: :in_progress)
-      true
+      first_question = ordered_questions(next_round).first
+      return false unless first_question
+
+      transition_to!(round: next_round, question: first_question, status: :in_progress)
     else
       complete_game!
-      true
     end
+    true
+  end
+
+  # ---------------------------------------------------------------------------
+  # Helpers
+  # ---------------------------------------------------------------------------
+
+  def display_leaderboard!(target_status)
+    DisplayLeaderboardService.call(
+      game: self,
+      current_round: current_round,
+      current_question: current_question
+    )
+
+    # Make sure the status is exactly what we want, regardless of what the
+    # service did, so the next advance_step! knows where it is.
+    reload
+    update!(status: target_status, question_started_at: Time.current)
+    true
   end
 
   def transition_to!(round:, question:, status: self.status)
@@ -113,24 +129,8 @@ class Game < ApplicationRecord
       status: status,
       current_round: round,
       current_question: question,
-      question_started_at: Time.current
+      question_started_at: now
     )
-  end
-
-  def go_to_next_question(question)
-    pos = question.position || 0
-    current_round.questions
-      .where("COALESCE(position, 0) > ? OR (COALESCE(position, 0) = ? AND id > ?)", pos, pos, question.id)
-      .order(Arel.sql("COALESCE(position, 0) ASC"), :id)
-      .first
-  end
-
-  def go_to_next_round(round)
-    pos = round.position || 0
-    rounds
-      .where("COALESCE(position, 0) > ? OR (COALESCE(position, 0) = ? AND id > ?)", pos, pos, round.id)
-      .order(Arel.sql("COALESCE(position, 0) ASC"), :id)
-      .first
   end
 
   def complete_game!
@@ -141,11 +141,41 @@ class Game < ApplicationRecord
     )
   end
 
+  def ordered_rounds
+    rounds.reorder(Arel.sql("COALESCE(position, 0) ASC"), :id)
+  end
+
+  def ordered_questions(round)
+    round.questions.reorder(Arel.sql("COALESCE(position, 0) ASC"), :id)
+  end
+
+  # 1-based position of the current question within the current round.
+  def question_number_in_round
+    return nil if current_round.nil? || current_question.nil?
+
+    index = ordered_questions(current_round).pluck(:id).index(current_question.id)
+    index && index + 1
+  end
+
+  def go_to_next_question(question)
+    pos = question.position || 0
+    ordered_questions(current_round)
+      .where("COALESCE(position, 0) > ? OR (COALESCE(position, 0) = ? AND id > ?)", pos, pos, question.id)
+      .first
+  end
+
+  def go_to_next_round(round)
+    pos = round.position || 0
+    ordered_rounds
+      .where("COALESCE(position, 0) > ? OR (COALESCE(position, 0) = ? AND id > ?)", pos, pos, round.id)
+      .first
+  end
+
   def generate_game_code
     self.game_code = SecureRandom.hex(3).upcase
   end
 
   def populate_quiz_data
-        QuizPopulator.call(self)
+    QuizPopulator.call(self)
   end
 end
