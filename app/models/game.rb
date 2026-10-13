@@ -77,8 +77,6 @@ class Game < ApplicationRecord
     current_round.questions.where.not(shown_at: nil).count
   end
 
-  # True after every 4th question in the round (the last question of a round
-  # is handled by the round-summary flow instead, so it never double-triggers)
   def should_show_leaderboard?
     count = questions_shown_count
     count.positive? && (count % LEADERBOARD_QUESTION_INTERVAL).zero? && !round_complete?
@@ -86,39 +84,33 @@ class Game < ApplicationRecord
 
   private
 
-  # The current question is the last one in the current round
   def round_complete?
     current_question.present? && go_to_next_question(current_question).nil?
   end
 
-  # Show the leaderboard first, THEN switch to round_summary
   def show_round_summary!
     DisplayLeaderboardService.call(game: self, current_round: current_round, current_question: current_question)
-    update!(status: :round_summary)
+    RoundTransitionService.call(self)
+    true
   end
 
   def advance_to_next_content!
     next_question = go_to_next_question(current_question)
+    return false unless next_question
 
-    if next_question.present?
-      transition_to!(round: current_round, question: next_question, status: :in_progress)
-    else
-      show_round_summary!
-    end
+    transition_to!(round: current_round, question: next_question, status: :in_progress)
     true
   end
 
   def start_next_round!
     next_round = go_to_next_round(current_round)
+    return complete_game! unless next_round.present?
 
-    if next_round.present?
-      first_q = next_round.questions.order(Arel.sql("COALESCE(position, 0) ASC"), :id).first
-      transition_to!(round: next_round, question: first_q, status: :in_progress)
-      true
-    else
-      complete_game!
-      true
-    end
+    first_q = next_round.questions.order(Arel.sql("COALESCE(position, 0) ASC"), :id).first
+    return false unless first_q.present?
+
+    transition_to!(round: next_round, question: first_q, status: :in_progress)
+    true
   end
 
   def transition_to!(round:, question:, status: self.status)
@@ -154,6 +146,7 @@ class Game < ApplicationRecord
       current_question: nil,
       question_started_at: nil
     )
+    true
   end
 
   def generate_game_code
