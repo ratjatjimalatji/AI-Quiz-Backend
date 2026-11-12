@@ -136,7 +136,7 @@ Players begin with three power-ups. Using one removes it from their inventory; s
 | --- | --- |
 | `get_hundred_points` | Immediately creates a submission and awards 100 points without requiring an answer |
 | `double_points` | Activates a modifier for the specified question; the next submission for that question consumes it and doubles a correct answer's points |
-| `glitch_sabotage` | Sends a `glitch_attack` event targeting another active player in the same game, with a 10,000 ms duration; a frontend must implement the visual effect |
+| `glitch_sabotage` | Sends a `glitch_attack` event targeting another active player in the same game, with a 10,000 ms duration |
 
 **Technologies and patterns:** namespaced services, a registry of score modifier strategies, PostgreSQL array inventory, deferred activation state, Action Cable attack events.
 
