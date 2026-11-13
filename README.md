@@ -144,8 +144,8 @@ Players begin with three power-ups. Using one removes it from their inventory; s
 **Demo focus:** use each power-up, show inventory consumption, and inspect the scoring or broadcast result.
 
 
-[▶ Watch the Player Power-Ups demo](docs/videos/power-ups-1.mov)
-[▶ Watch the Player Power-Ups demo](docs/videos/power-ups-2.mov)
+[▶ Watch the Player Power-Ups Initiation Demo](docs/videos/power-ups-1.mov)
+[▶ Watch the Player Power-Ups Recipient Demo](docs/videos/power-ups-2.mov)
 
 ![Player Power-Ups screenshot](docs/images/power-ups-1.png)
 
