@@ -38,8 +38,6 @@ Hosts register with a name and receive a generated token. Players receive a sepa
 
 **Technologies and patterns:** Active Record `has_secure_token`, shared authentication methods in `ApplicationController`, bearer headers, token-based session recovery. Current authentication does not use passwords or JWTs.
 
-**Demo focus:** create a host, join as a player, then restore both sessions using saved tokens.
-
 <!-- TODO: add demo video for Host and Player Sessions -->
 [▶ Watch the Host and Player Sessions demo](docs/videos/sessions.mp4)
 
@@ -54,7 +52,6 @@ Lobby broadcasts announce game creation, the host, and joined players. A player-
 
 **Technologies and patterns:** Active Record associations and callbacks, `SecureRandom`, player counter cache, `QuizPopulator`, Action Cable publish/subscribe events.
 
-**Demo focus:** create a game, copy its code, and show several players joining the same lobby.
 
 <!-- TODO: add demo video for Multiplayer Lobby -->
 [▶ Watch the Multiplayer Lobby demo](docs/videos/multiplayer-lobby.mp4)
@@ -68,8 +65,6 @@ The host advances through ordered questions, periodic leaderboards, round summar
 Authenticated WebSocket connections subscribe to `GameChannel` using a game code. Subscription checks restrict hosts to their own games and players to games they belong to.
 
 **Technologies and patterns:** Action Cable, room-scoped streams, enum-based state transitions, pessimistic locking with `with_lock`, transition service objects.
-
-**Demo focus:** subscribe two clients, start a game, and show both receiving the same updates as the host advances.
 
 <!-- TODO: add demo video for Live Game Progression -->
 [▶ Watch the Live Game Progression demo](docs/videos/live-game-progression.mp4)
@@ -92,8 +87,6 @@ Options support an Active Storage image attachment and include `image_url` in JS
 
 **Technologies and patterns:** YAML-driven content, `QuizPopulator`, nested attributes, enum question types, model JSON serialization, Active Storage and Cloudinary.
 
-**Demo focus:** inspect a round, create or edit a question, and show the four implemented answer formats.
-
 <!-- TODO: add demo video for Question Bank -->
 [▶ Watch the Question Bank demo](docs/videos/question-bank.mp4)
 
@@ -107,8 +100,6 @@ Correct answers earn 100 points during the first five seconds. Each full second 
 
 **Technologies and patterns:** JSON/JSONB answer storage, database transactions, a unique submission index, `ScoreCalculator` and `ScoreUpdater` service objects.
 
-**Demo focus:** compare a fast correct answer, a slower correct answer, an incorrect answer, and a rejected duplicate.
-
 <!-- TODO: add demo video for Answer Submission and Scoring -->
 [▶ Watch the Answer Submission and Scoring demo](docs/videos/answer-scoring.mp4)
 
@@ -121,8 +112,6 @@ A leaderboard appears after every fourth question, except when that question end
 The highest-scoring half of active players advance, rounded up. Advancement ties use earlier player creation time. Other active players are marked eliminated, and survivors receive a refreshed power-up inventory. Results identify finalists when two players remain and a winner when one remains. The game completes after the host advances beyond the final round summary.
 
 **Technologies and patterns:** dedicated leaderboard, advancement, elimination, and result services; ordered database queries; transactional round transitions; WebSocket broadcasts.
-
-**Demo focus:** show a mid-round leaderboard, finish a round, and inspect advancing/eliminated players and refreshed power-ups.
 
 <!-- TODO: add demo video for Leaderboards and Elimination -->
 [▶ Watch the Leaderboards and Elimination demo](docs/videos/leaderboards-elimination.mp4)
@@ -140,8 +129,6 @@ Players begin with three power-ups. Using one removes it from their inventory; s
 | `glitch_sabotage` | Sends a `glitch_attack` event targeting another active player in the same game, with a 10,000 ms duration |
 
 **Technologies and patterns:** namespaced services, a registry of score modifier strategies, PostgreSQL array inventory, deferred activation state, Action Cable attack events.
-
-**Demo focus:** use each power-up, show inventory consumption, and inspect the scoring or broadcast result.
 
 
 [▶ Watch the Player Power-Ups Initiation Demo](docs/videos/power-ups-1.mov)
