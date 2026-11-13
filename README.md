@@ -44,6 +44,7 @@ Hosts register with a name and receive a generated token. Players receive a sepa
 [▶ Watch the Host and Player Sessions demo](docs/videos/sessions.mp4)
 
 ![Host and Player Sessions screenshot](docs/images/sessions-1.png)
+![Host and Player Sessions screenshot](docs/images/sessions-2.png)
 
 ### 2. Game creation and multiplayer lobby
 
